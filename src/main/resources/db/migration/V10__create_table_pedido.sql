@@ -1,0 +1,23 @@
+create table pedido (
+	id bigint not null auto_increment primary key,
+	sub_total decimal(19,2) not null,
+	taxa_frete decimal(19,2) not null,
+	valot_total decimal(19,2) not null,
+	data_criacao datetime(6) not null,
+	data_confirmacao datetime(6),
+	data_cancelamento datetime(6),
+	data_entrega datetime(6),
+	status varchar(11) not null,
+	endereco_cep varchar(15)  not null,
+	endereco_lagradouro varchar(255) not null,
+	endereco_numero varchar(70) not null,
+	endereco_bairro varchar(255) not null,
+	endereco_cidade_id bigint(20) not null,
+	forma_pagamento_id bigint(20) not null,
+	restaurante_id bigint(20) not null,
+	cliente_id bigint(20)  not null,
+	FOREIGN KEY (endereco_cidade_id) REFERENCES cidade(id),
+	FOREIGN KEY (forma_pagamento_id) REFERENCES forma_pagamento(id),
+	FOREIGN KEY (restaurante_id) REFERENCES restaurante(id),
+	FOREIGN KEY (cliente_id) REFERENCES usuario(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
