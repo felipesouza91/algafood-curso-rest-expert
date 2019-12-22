@@ -17,18 +17,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.felipe.algafood.core.Groups.CozinhaId;
-import com.felipe.algafood.core.Groups.RestauranteId;
 import com.felipe.algafood.core.ValorZeroIncluiDescricao;
 
 import lombok.Data;
@@ -46,23 +38,17 @@ import lombok.EqualsAndHashCode;
 public class Restaurante {
 
 	@Id
-	@NotNull(groups = RestauranteId.class)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;
 	
-	@NotBlank
 	@Column(nullable = false)
 	private String nome;
 	
-	@NotNull
-	@PositiveOrZero
+	
 	@Column(name="taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	
-	@Valid
-	@NotNull
-	@ConvertGroup(from = Default.class, to = CozinhaId.class)
 	@ManyToOne
 	@JoinColumn(name= "cozinha_id", nullable = false)
 	private Cozinha cozinha;
@@ -78,7 +64,6 @@ public class Restaurante {
 	@Column(nullable =  false)
 	private OffsetDateTime dataAtualizacao;
 	
-	
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento",
 					joinColumns = @JoinColumn(name="restaurante_id"),
@@ -87,4 +72,14 @@ public class Restaurante {
 	
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos;
+	
+	private Boolean ativo = Boolean.TRUE;
+	
+	public void ativar() {
+		setAtivo(true);
+	}
+	
+	public void inativar() {
+		setAtivo(false);
+	}
 }

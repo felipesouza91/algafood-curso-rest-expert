@@ -10,12 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
-
-import com.felipe.algafood.core.Groups.CidadeId;
-import com.felipe.algafood.core.Groups.EstadoId;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +21,6 @@ import lombok.EqualsAndHashCode;
 public class Cidade {
 
 	@Id
-	@NotNull(groups = CidadeId.class)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;

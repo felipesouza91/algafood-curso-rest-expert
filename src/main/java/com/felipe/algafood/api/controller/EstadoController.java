@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.dto.converters.EstadoDtoManager;
+import com.felipe.algafood.api.dto.inputs.EstadoInput;
+import com.felipe.algafood.api.dto.model.EstadoModel;
 import com.felipe.algafood.domain.model.Estado;
 import com.felipe.algafood.domain.service.EstadoService;
 
@@ -26,34 +30,37 @@ public class EstadoController {
 	@Autowired
 	private EstadoService estadoService;
 	
+	@Autowired
+	private EstadoDtoManager dtoManager;
+	
 	@GetMapping
-	public ResponseEntity<List<Estado>> buscar() {
-		List<Estado> list = this.estadoService.getEstadoRepository().findAll();
-		return ResponseEntity.ok().body(list);
+	public ResponseEntity<List<EstadoModel>> buscar() {
+		return ResponseEntity.ok().body(dtoManager.toCollectionDtoModel(this.estadoService.getEstadoRepository().findAll()));
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Estado> buscarPorId(@PathVariable Long id) {
-		Estado estado = this.estadoService.buscarPorId(id);
-		return ResponseEntity.ok(estado);
+	public ResponseEntity<EstadoModel> buscarPorId(@PathVariable Long id) {
+		return ResponseEntity.ok(dtoManager.conveterToDtoModel(this.estadoService.buscarPorId(id)));
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> salvar (@RequestBody @Valid Estado estado) {
-		estado = this.estadoService.salvar(estado);
-		return ResponseEntity.status(HttpStatus.CREATED).body(estado);
+	public ResponseEntity<?> salvar (@RequestBody @Valid EstadoInput estadoInput) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(
+				this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput))
+				);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Estado> atualizar(@PathVariable Long id, @RequestBody @Valid Estado estado) {
-		estado = estadoService.atualizar(id, estado);
-		return ResponseEntity.ok(estado);
+	public ResponseEntity<EstadoModel> atualizar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput) {
+		Estado estado = estadoService.buscarPorId(id);
+		dtoManager.copyToDomainObject(estadoInput, estado);
+		return ResponseEntity.ok(dtoManager.conveterToDtoModel(this.estadoService.salvar(estado)));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> excluir(@PathVariable Long id) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void excluir(@PathVariable Long id) {
 		estadoService.excluir(id);
-		return ResponseEntity.noContent().build();
 	}
 	
 }

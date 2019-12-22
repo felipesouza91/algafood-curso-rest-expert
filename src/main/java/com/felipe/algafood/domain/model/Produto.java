@@ -12,11 +12,6 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
-
-import com.felipe.algafood.core.Groups.ProdutoId;
-import com.felipe.algafood.core.Groups.RestauranteId;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +22,6 @@ import lombok.EqualsAndHashCode;
 public class Produto {
 
 	@Id
-	@NotNull(groups = ProdutoId.class)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;
@@ -43,7 +37,6 @@ public class Produto {
 	private Boolean ativo;
 	
 	@Valid
-	@ConvertGroup(from = Default.class, to = RestauranteId.class)
 	@ManyToOne
 	@JoinColumn(name = "restaurante_id", nullable = false)
 	private Restaurante restaurante;

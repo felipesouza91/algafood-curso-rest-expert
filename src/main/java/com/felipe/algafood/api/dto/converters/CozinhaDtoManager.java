@@ -37,7 +37,6 @@ public class CozinhaDtoManager implements ApplicationDtoManagerInterface<Cozinha
 
 	@Override
 	public void copyToDomainObject(CozinhaInput objectInput, Cozinha object) {
-		// TODO Auto-generated method stub
-		
+		modelMapper.map(objectInput, object);
 	}
 }

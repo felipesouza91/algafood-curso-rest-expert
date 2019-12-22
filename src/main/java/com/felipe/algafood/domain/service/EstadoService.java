@@ -1,6 +1,5 @@
 package com.felipe.algafood.domain.service;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -31,20 +30,12 @@ public class EstadoService {
 	}
 
 	@Transactional
-	public Estado atualizar(Long id, Estado estado) {
-		Estado estadoSalvo = this.buscarPorId(id);
-		BeanUtils.copyProperties(estado, estadoSalvo, "id");
-		return this.estadoRepository.save(estadoSalvo);
-	}
-
-	@Transactional
 	public void excluir(Long id) {
+		this.buscarPorId(id);
 		try {
-			this.buscarPorId(id);
+			
 			this.estadoRepository.deleteById(id);
 			this.estadoRepository.flush();
-		}catch (EstadoNaoEncontradaException e) {
-			throw e;
 		} catch (DataIntegrityViolationException ex) {
 			throw new EntidadeEmUsoException(String.format("Estado de codigo %d não pode ser removida, pois esta em uso", id));
 		}	// TODO: handle exception

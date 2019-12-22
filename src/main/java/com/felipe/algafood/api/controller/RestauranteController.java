@@ -16,6 +16,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -81,6 +82,18 @@ public class RestauranteController {
 		merge(campos, restauranteAtual, request );
 		validate(restauranteAtual, "restaurante");
 		return ResponseEntity.ok(this.restauranteService.atualizar(id, restauranteAtual));
+	}
+	
+	@PutMapping("/{id}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarRestaurante(@PathVariable Long id) {
+		this.restauranteService.ativar(id);
+	}
+	
+	@DeleteMapping("/{id}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarRestaurante(@PathVariable Long id) {
+		this.restauranteService.inativar(id);
 	}
 
 	private void validate(Restaurante restaurante, String objectName) {

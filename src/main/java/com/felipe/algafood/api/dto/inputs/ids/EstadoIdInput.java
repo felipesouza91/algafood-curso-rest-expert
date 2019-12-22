@@ -1,4 +1,4 @@
-package com.felipe.algafood.api.dto.inputs;
+package com.felipe.algafood.api.dto.inputs.ids;
 
 import javax.validation.constraints.NotNull;
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.dto.converters.CozinhaDtoManager;
+import com.felipe.algafood.api.dto.inputs.CozinhaInput;
+import com.felipe.algafood.api.dto.model.CozinhaModel;
 import com.felipe.algafood.domain.model.Cozinha;
 import com.felipe.algafood.domain.repository.CozinhaRepository;
 import com.felipe.algafood.domain.service.CozinhaService;
@@ -32,35 +34,38 @@ public class CozinhaController {
 	@Autowired
 	private CozinhaService cozinhaService;
 	
+	@Autowired
+	private CozinhaDtoManager cozinhaDtoManager;
+	
 	
 	@GetMapping
-	public ResponseEntity<List<Cozinha>> listar() {
-		return ResponseEntity.ok().body(cozinhaRepository.findAll()) ;
+	public ResponseEntity<List<CozinhaModel>> listar() {
+		return ResponseEntity.ok().body(cozinhaDtoManager.toCollectionDtoModel(cozinhaRepository.findAll())) ;
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Cozinha> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<CozinhaModel> buscarPorId(@PathVariable Long id) {
 		this.cozinhaService.buscarPorId(id);
-		return ResponseEntity.ok().body(this.cozinhaService.buscarPorId(id));
+		return ResponseEntity.ok().body(cozinhaDtoManager.conveterToDtoModel(this.cozinhaService.buscarPorId(id)));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cozinha savar (@RequestBody @Valid Cozinha cozinha) {
-		return cozinhaService.salvar(cozinha);
+	public CozinhaModel savar (@RequestBody @Valid CozinhaInput cozinhaInput) {
+		Cozinha cozinha = cozinhaDtoManager.converterToDomainObject(cozinhaInput);
+		return cozinhaDtoManager.conveterToDtoModel(cozinhaService.salvar(cozinha));
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody @Valid Cozinha cozinha) {
+	public ResponseEntity<CozinhaModel> atualizar(@PathVariable Long id, @RequestBody @Valid CozinhaInput cozinhaInput) {
 		Cozinha cozinhaAtual = this.cozinhaService.buscarPorId(id);
-		BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-		cozinhaService.salvar(cozinhaAtual);
-		return ResponseEntity.ok(cozinhaAtual);
+		cozinhaDtoManager.copyToDomainObject(cozinhaInput, cozinhaAtual);
+		return ResponseEntity.ok(cozinhaDtoManager.conveterToDtoModel(cozinhaService.salvar(cozinhaAtual)));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Cozinha> remover(@PathVariable Long id) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void remover(@PathVariable Long id) {
 		this.cozinhaService.excluir(id);
-		return ResponseEntity.noContent().build();
 	}
 }

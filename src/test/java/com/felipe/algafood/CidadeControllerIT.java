@@ -16,7 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.felipe.algafood.api.dto.inputs.CidadeInput;
-import com.felipe.algafood.api.dto.inputs.EstadoIdInput;
+import com.felipe.algafood.api.dto.inputs.ids.EstadoIdInput;
 import com.felipe.algafood.api.exceptionhandler.ProblemType;
 import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.model.Cozinha;

@@ -2,6 +2,7 @@ package com.felipe.algafood.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.felipe.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.felipe.algafood.domain.exception.NegocioException;
@@ -57,6 +58,18 @@ public class RestauranteService {
 		findCozinhaById(restaurante.getCozinha().getId());
 		this.buscarPorId(id);
 		return this.restauranteRepository.save(restaurante);
+	}
+	
+	@Transactional
+	public void ativar(Long id) {
+		Restaurante restaurante = this.buscarPorId(id);
+		restaurante.ativar();
+	}
+	
+	@Transactional
+	public void inativar(Long id) {
+		Restaurante restaurante = this.buscarPorId(id);
+		restaurante.inativar();
 	}
 	
 	/**

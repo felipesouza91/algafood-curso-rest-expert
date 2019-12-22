@@ -6,10 +6,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.Valid;
-import javax.validation.groups.ConvertGroup;
-
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
-import com.felipe.algafood.core.Groups.CidadeId;
 
 import lombok.Data;
 
@@ -33,7 +29,6 @@ public class Endereco {
 	private String bairro;
 	
 	@Valid
-	@ConvertGroup(from = Default.class, to = CidadeId.class )
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "endereco_cidade_id")
 	private Cidade cidade;

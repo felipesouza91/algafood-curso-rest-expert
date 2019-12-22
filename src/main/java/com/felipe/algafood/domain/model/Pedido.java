@@ -20,15 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 
 import org.hibernate.annotations.CreationTimestamp;
-
-import com.felipe.algafood.core.Groups.ClienteId;
-import com.felipe.algafood.core.Groups.FormaPagamentoId;
-import com.felipe.algafood.core.Groups.PedidoId;
-import com.felipe.algafood.core.Groups.RestauranteId;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,7 +33,6 @@ import lombok.EqualsAndHashCode;
 public class Pedido {
 
 	@Id
-	@NotNull(groups = PedidoId.class)
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;
@@ -79,20 +71,17 @@ public class Pedido {
 	private Endereco enderecoEntrega;
 	
 	@Valid
-	@ConvertGroup(from = Default.class, to= FormaPagamentoId.class)
 	@ManyToOne
 	@JoinColumn(name = "forma_pagamento_id", nullable = false)
 	private FormaPagamento formaPagamento;
 	
 	@Valid
-	@ConvertGroup(from = Default.class, to = RestauranteId.class)
 	@ManyToOne
 	@JoinColumn(name = "restaurante_id", nullable = false)
 	private Restaurante restaurante;
 	
 	
 	@Valid
-	@ConvertGroup(from = Default.class, to = ClienteId.class)
 	@ManyToOne
 	@JoinColumn(name = "cliente_id", nullable = false)
 	private Usuario cliente;

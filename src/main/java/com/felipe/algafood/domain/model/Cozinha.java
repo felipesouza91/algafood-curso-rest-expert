@@ -10,10 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.felipe.algafood.core.Groups.CozinhaId;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +23,6 @@ import lombok.EqualsAndHashCode;
 public class Cozinha {
 	
 	@Id
-	@NotNull(groups = CozinhaId.class)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;

@@ -38,7 +38,7 @@ public class EstadoDtoManager implements ApplicationDtoManagerInterface<Estado, 
 
 	@Override
 	public void copyToDomainObject(EstadoInput objectInput, Estado object) {
-		// TODO Auto-generated method stub
+		modelMapper.map(objectInput, object);
 		
 	}
 }

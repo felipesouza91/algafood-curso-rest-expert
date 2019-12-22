@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.felipe.algafood.api.dto.inputs.CidadeInput;
 import com.felipe.algafood.api.dto.model.CidadeModel;
 import com.felipe.algafood.domain.model.Cidade;
+import com.felipe.algafood.domain.model.Estado;
 import com.felipe.algafood.infrastructure.dto.ApplicationDtoManagerInterface;
 
 @Component
@@ -37,7 +38,8 @@ public class CidadeDtoManager implements ApplicationDtoManagerInterface<Cidade, 
 
 	@Override
 	public void copyToDomainObject(CidadeInput objectInput, Cidade object) {
-		
+		object.setEstado(new Estado());
+		modelMapper.map(objectInput, object);
 	}
 
 }
