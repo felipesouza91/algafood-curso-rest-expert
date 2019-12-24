@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.felipe.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.felipe.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.felipe.algafood.domain.exception.NegocioException;
 import com.felipe.algafood.domain.exception.RestauranteNaoEncontradaException;
+import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.model.Cozinha;
 import com.felipe.algafood.domain.model.Restaurante;
 import com.felipe.algafood.domain.repository.RestauranteRepository;
@@ -22,6 +24,9 @@ public class RestauranteService {
 	
 	@Autowired
 	private CozinhaService cozinhaService;
+	
+	@Autowired
+	private CidadeService cidadeService;
 
 	/**
 	 * Retornar o objeto do banco de dados
@@ -55,7 +60,10 @@ public class RestauranteService {
 	 * @throws NegocioException caso a Cozinha da instancia não esteja cadastrado
 	 * */
 	public Restaurante atualizar(Long id, Restaurante restaurante) {
-		findCozinhaById(restaurante.getCozinha().getId());
+		Cozinha cozinha = this.findCozinhaById(restaurante.getCozinha().getId());
+		Cidade cidade = this.findCidadeByid(restaurante.getEndereco().getCidade().getId());
+		restaurante.setCozinha(cozinha);
+		restaurante.getEndereco().setCidade(cidade);
 		this.buscarPorId(id);
 		return this.restauranteRepository.save(restaurante);
 	}
@@ -85,5 +93,15 @@ public class RestauranteService {
 			throw new NegocioException(e.getMessage(), e);
 		}
 		return cozinha;
+	}
+	
+	private Cidade findCidadeByid(Long id ) {
+		Cidade cidade = null;
+		try {
+			cidade = this.cidadeService.buscarPorId(id);
+		} catch (CidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+		return cidade;
 	}
 }

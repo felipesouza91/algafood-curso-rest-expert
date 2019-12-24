@@ -27,7 +27,6 @@ public class Grupo {
 	@EqualsAndHashCode.Include
 	private Long id;
 	
-	@NotBlank
 	private String nome;
 	
 	@ManyToMany

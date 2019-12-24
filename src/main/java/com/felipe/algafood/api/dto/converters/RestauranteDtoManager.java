@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.felipe.algafood.api.dto.inputs.RestauranteInput;
 import com.felipe.algafood.api.dto.model.RestauranteModel;
+import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.model.Cozinha;
 import com.felipe.algafood.domain.model.Restaurante;
 import com.felipe.algafood.infrastructure.dto.ApplicationDtoManagerInterface;
@@ -37,6 +38,9 @@ public class RestauranteDtoManager implements ApplicationDtoManagerInterface<Res
 	@Override
 	public void copyToDomainObject(RestauranteInput objectInput, Restaurante object) {
 		object.setCozinha(new Cozinha());
+		if( object.getEndereco() != null ) {
+			object.getEndereco().setCidade(new Cidade());	
+		}
 		modelMapper.map(objectInput, object);
 	}
 }
