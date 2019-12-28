@@ -1,5 +1,6 @@
 package com.felipe.algafood.api.dto.converters;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class FormaPagamentoDtoManager implements
 	}
 	
 	@Override
-	public List<FormaPagamentoModel> toCollectionDtoModel( List<FormaPagamento> listFormaPagamentos) {
+	public List<FormaPagamentoModel> toCollectionDtoModel( Collection<FormaPagamento> listFormaPagamentos) {
 		return listFormaPagamentos
 				.stream()
 				.map(formaPagamento -> conveterToDtoModel(formaPagamento)).collect(Collectors.toList());

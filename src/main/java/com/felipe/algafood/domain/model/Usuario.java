@@ -1,8 +1,8 @@
 package com.felipe.algafood.domain.model;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -31,13 +30,10 @@ public class Usuario {
 	@EqualsAndHashCode.Include
 	private Long id;
 	
-	@NotBlank
 	private String nome;
 	
-	@NotBlank
 	private String email;
 	
-	@NotBlank
 	private String senha;
 	
 	@CreationTimestamp
@@ -48,6 +44,14 @@ public class Usuario {
 	@JoinTable(name="usuario_grupo",
 				joinColumns = @JoinColumn(name="usuario_id"),
 				inverseJoinColumns = @JoinColumn(name="grupo_id"))
-	private List<Grupo> grupos = new ArrayList<>();;
+	private Set<Grupo> grupos = new HashSet<>();
+	
+	public boolean adicionarGrupo(Grupo grupo) {
+		return this.getGrupos().add(grupo);
+	}
+
+	public boolean removerGrupo(Grupo grupo) {
+		return this.getGrupos().remove(grupo);
+	}
 	
 }

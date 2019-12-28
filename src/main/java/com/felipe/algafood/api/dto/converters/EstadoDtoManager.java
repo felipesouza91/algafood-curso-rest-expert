@@ -1,5 +1,6 @@
 package com.felipe.algafood.api.dto.converters;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class EstadoDtoManager implements ApplicationDtoManagerInterface<Estado, 
 	}
 
 	@Override
-	public List<EstadoModel> toCollectionDtoModel(List<Estado> listDomainObject) {
+	public List<EstadoModel> toCollectionDtoModel(Collection<Estado> listDomainObject) {
 		return listDomainObject
 				.stream()
 				.map(estado -> conveterToDtoModel(estado))

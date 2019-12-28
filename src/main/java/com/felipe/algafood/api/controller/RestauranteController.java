@@ -66,6 +66,30 @@ public class RestauranteController {
 		this.restauranteService.ativar(id);
 	}
 	
+	@PutMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarMultiplos(@RequestBody List<Long> restaurantesIds) {
+		this.restauranteService.ativar(restaurantesIds);
+	}
+	
+	@DeleteMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarMultiplos(@RequestBody List<Long> restaurantesIds) {
+		this.restauranteService.inativar(restaurantesIds);
+	}
+	
+	@PutMapping("/{id}/fechamento")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void fecharRestaurante(@PathVariable Long id) {
+		this.restauranteService.fechar(id);
+	}
+	
+	@PutMapping("/{id}/abertura")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void abrirRestaurante(@PathVariable Long id) {
+		this.restauranteService.abrir(id);
+	}
+	
 	@DeleteMapping("/{id}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativarRestaurante(@PathVariable Long id) {

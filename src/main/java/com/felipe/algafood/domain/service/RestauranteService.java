@@ -1,5 +1,7 @@
 package com.felipe.algafood.domain.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +12,9 @@ import com.felipe.algafood.domain.exception.NegocioException;
 import com.felipe.algafood.domain.exception.RestauranteNaoEncontradaException;
 import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.model.Cozinha;
+import com.felipe.algafood.domain.model.FormaPagamento;
 import com.felipe.algafood.domain.model.Restaurante;
+import com.felipe.algafood.domain.model.Usuario;
 import com.felipe.algafood.domain.repository.RestauranteRepository;
 
 import lombok.Getter;
@@ -23,10 +27,16 @@ public class RestauranteService {
 	private RestauranteRepository restauranteRepository;
 	
 	@Autowired
+	private FormaPagamentoService formaPagamentoService;
+	
+	@Autowired
 	private CozinhaService cozinhaService;
 	
 	@Autowired
 	private CidadeService cidadeService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 	/**
 	 * Retornar o objeto do banco de dados
@@ -75,9 +85,68 @@ public class RestauranteService {
 	}
 	
 	@Transactional
+	public void fechar(Long id) {
+		Restaurante restaurante = this.buscarPorId(id);
+		restaurante.fechar();
+	}
+
+	@Transactional
+	public void abrir(Long id) {
+		Restaurante restaurante = this.buscarPorId(id);
+		restaurante.abrir();
+	}
+	
+	@Transactional
 	public void inativar(Long id) {
 		Restaurante restaurante = this.buscarPorId(id);
 		restaurante.inativar();
+	}
+	
+	@Transactional
+	public void desassociarFormaPagamento(Long idRestaurante, Long idFormaPagamento) {
+		Restaurante restaurante = this.buscarPorId(idRestaurante);
+		FormaPagamento formaPagamento = this.formaPagamentoService.buscarById(idFormaPagamento);
+		restaurante.removerFormaPagamento(formaPagamento);
+	}
+	
+	@Transactional
+	public void associarFormaPagamento(Long idRestaurante, Long idFormaPagamento) {
+		Restaurante restaurante = this.buscarPorId(idRestaurante);
+		FormaPagamento formaPagamento = this.formaPagamentoService.buscarById(idFormaPagamento);
+		restaurante.adicionarFormaPagamento(formaPagamento);
+	}
+	
+	@Transactional
+	public void associarResponavel(Long id, Long idUsuario) {
+		Restaurante restaurante = this.buscarPorId(id);
+		Usuario usuario = this.usuarioService.buscarPorId(idUsuario);
+		restaurante.adicionarResponavel(usuario);
+	}
+
+	@Transactional
+	public void desassociarResponavel(Long id, Long idUsuario) {
+		Restaurante restaurante = this.buscarPorId(id);
+		Usuario usuario = this.usuarioService.buscarPorId(idUsuario);
+		restaurante.removerResponavel(usuario);
+	}
+	
+	@Transactional
+	public void ativar(List<Long> restaurantesIds) {
+		try {
+			restaurantesIds.forEach(this::ativar);	
+		} catch (RestauranteNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+		
+	}
+	
+	@Transactional
+	public void inativar(List<Long> restaurantesIds) {
+		try {
+			restaurantesIds.forEach(this::inativar);
+		} catch (RestauranteNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 	}
 	
 	/**
@@ -104,4 +173,8 @@ public class RestauranteService {
 		}
 		return cidade;
 	}
+
+
+
+	
 }

@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,12 +24,10 @@ public class Produto {
 	@EqualsAndHashCode.Include
 	private Long id;
 	
-	@NotBlank
 	private String nome;
 	
 	private String descricao;
 	
-	@NotNull
 	private BigDecimal preco;
 	
 	private Boolean ativo;

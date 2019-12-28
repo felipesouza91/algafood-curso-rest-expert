@@ -1,5 +1,6 @@
 package com.felipe.algafood.api.dto.converters;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class RestauranteDtoManager implements ApplicationDtoManagerInterface<Res
 	}
 
 	@Override
-	public List<RestauranteModel> toCollectionDtoModel(List<Restaurante> listDomainObject) {
+	public List<RestauranteModel> toCollectionDtoModel(Collection<Restaurante> listDomainObject) {
 		return listDomainObject.stream().map(restaurante -> conveterToDtoModel(restaurante)).collect(Collectors.toList());
 	}
 

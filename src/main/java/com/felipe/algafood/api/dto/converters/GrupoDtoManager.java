@@ -1,5 +1,6 @@
 package com.felipe.algafood.api.dto.converters;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class GrupoDtoManager implements ApplicationDtoManagerInterface<Grupo, Gr
 	}
 	
 	@Override
-	public List<GrupoModel> toCollectionDtoModel( List<Grupo> grupoList) {
+	public List<GrupoModel> toCollectionDtoModel( Collection<Grupo> grupoList) {
 		return grupoList
 				.stream()
 				.map(grupo -> conveterToDtoModel(grupo))

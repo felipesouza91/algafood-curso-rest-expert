@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "itens_pedido")
-public class ItensPedido {
+public class ItemPedido {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class ItensPedido {
 
 	@NotNull
 	@Column(nullable =  false)
-	private Long quantidade;
+	private Integer quantidade;
 	
 	@NotNull
 	@Column(name = "preco_unitario", nullable = false	)
@@ -50,4 +50,20 @@ public class ItensPedido {
 	@ManyToOne
 	@JoinColumn(name = "pedido_id")
 	private Pedido pedido;
+	
+	public void calcularPrecoTotal() {
+		BigDecimal precoUnitario = this.getPrecoUnitario();
+		Integer quantidade = this.getQuantidade();
+
+		if (precoUnitario == null) {
+			precoUnitario = BigDecimal.ZERO;
+		}
+
+		if (quantidade == null) {
+			quantidade = 0;
+		}
+
+		this.setPrecoTotal(precoUnitario.multiply(new BigDecimal(quantidade)));
+	}
+	
 }

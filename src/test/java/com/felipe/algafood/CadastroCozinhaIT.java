@@ -1,15 +1,10 @@
 package com.felipe.algafood;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-
-import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,7 +14,6 @@ import com.felipe.algafood.util.BasicMethodsTest;
 import com.felipe.algafood.util.DatabaseCleaner;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -49,7 +43,9 @@ public class CadastroCozinhaIT implements BasicMethodsTest {
 	@Override
 	public void aoBuscardeveRetornarTodasAsEntidadesEStatusOK() {
 		// TODO Auto-generated method stub
-
+		if(totalDeCozinasPreparadas == 2 ) {
+			
+		}
 	}
 
 	@Override
@@ -133,7 +129,7 @@ public class CadastroCozinhaIT implements BasicMethodsTest {
 		cozinha2.setNome("Americana");
 		cozinhaService.salvar(cozinha2);
 		
-		this.totalDeCozinasPreparadas = (int) this.cozinhaService.getCozinhaRepository().count();
+		this.totalDeCozinasPreparadas = 2;
 	}
 
 

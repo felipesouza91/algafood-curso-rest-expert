@@ -1,5 +1,6 @@
 package com.felipe.algafood.api.dto.converters;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class CidadeDtoManager implements ApplicationDtoManagerInterface<Cidade, 
 	}
 	
 	@Override
-	public List<CidadeModel> toCollectionDtoModel( List<Cidade> listCidade) {
+	public List<CidadeModel> toCollectionDtoModel( Collection<Cidade> listCidade) {
 		return listCidade
 				.stream()
 				.map(cidade -> conveterToDtoModel(cidade)).collect(Collectors.toList());

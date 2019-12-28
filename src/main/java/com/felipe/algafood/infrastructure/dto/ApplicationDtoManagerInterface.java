@@ -1,5 +1,6 @@
 package com.felipe.algafood.infrastructure.dto;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public interface ApplicationDtoManagerInterface<T, D, I> {
 
 	public D conveterToDtoModel(T object) ;
 	
-	public List<D> toCollectionDtoModel( List<T> listDomainObject) ;
+	public List<D> toCollectionDtoModel( Collection<T> listDomainObject) ;
 
 	public T converterToDomainObject(I objectInput) ;
 
