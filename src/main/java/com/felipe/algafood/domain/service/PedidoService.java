@@ -1,15 +1,17 @@
 package com.felipe.algafood.domain.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.felipe.algafood.core.data.PageableTranslator;
 import com.felipe.algafood.domain.exception.EntidadeEmUsoException;
 import com.felipe.algafood.domain.exception.NegocioException;
 import com.felipe.algafood.domain.exception.PedidoNaoEncontradaException;
+import com.felipe.algafood.domain.filter.PedidoFilter;
 import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.model.FormaPagamento;
 import com.felipe.algafood.domain.model.Pedido;
@@ -17,6 +19,8 @@ import com.felipe.algafood.domain.model.Produto;
 import com.felipe.algafood.domain.model.Restaurante;
 import com.felipe.algafood.domain.model.Usuario;
 import com.felipe.algafood.domain.repository.PedidoRepository;
+import com.felipe.algafood.infrastructure.repository.spec.PedidosSpecs;
+import com.google.common.collect.ImmutableMap;
 
 import lombok.Getter;
 
@@ -44,13 +48,14 @@ public class PedidoService {
 
 	
 	@Transactional
-	public List<Pedido> buscarTodos() {
-		return this.pedidoRepository.findAll();
+	public Page<Pedido> buscarTodos(PedidoFilter filter, Pageable pageable) {
+		pageable = this.traduzirPegeable(pageable);
+		return this.pedidoRepository.findAll(PedidosSpecs.findWithFilter(filter), pageable);
 	}
 	
 	@Transactional
-	public Pedido buscarPorId(Long id) {
-		return this.pedidoRepository.findById(id).orElseThrow(() -> new PedidoNaoEncontradaException(id));
+	public Pedido buscarPorCodigo(String codigo) {
+		return this.pedidoRepository.findByCodigo(codigo).orElseThrow(() -> new PedidoNaoEncontradaException(codigo));
 	}
 	
 	@Transactional
@@ -63,15 +68,33 @@ public class PedidoService {
 	}
 
 	@Transactional
-	public void excluir(Long id) {
-		this.buscarPorId(id);
+	public void excluir(String codigo) {
+		Pedido pedido = this.buscarPorCodigo(codigo);
 		try {
-			this.pedidoRepository.deleteById(id);
+			this.pedidoRepository.deleteById(pedido.getId());
 			this.pedidoRepository.flush();
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format("Pedido %d não pode ser removida, pois esta em uso", id));
+					String.format("Pedido de codigo: %d não pode ser removida, pois esta em uso", codigo));
 		}
+	}
+	
+	@Transactional
+	public void confirmar(String codigo) {
+		Pedido pedido = this.buscarPorCodigo(codigo);
+		pedido.confirmar();
+	}
+	
+	@Transactional
+	public void entregar(String codigo) {
+		Pedido pedido = this.buscarPorCodigo(codigo);
+		pedido.entregar();
+	}
+	
+	@Transactional
+	public void cancelar(String codigo) {
+		Pedido pedido = this.buscarPorCodigo(codigo);
+		pedido.cancelar();
 	}
 	
 	private void validarPedido(Pedido pedido) {
@@ -90,6 +113,16 @@ public class PedidoService {
 					formaPagamento.getDescricao()));
 		}
 		
+	}
+
+	private Pageable traduzirPegeable(Pageable pageable) {
+		var mapeamento = ImmutableMap.of(
+				"codigo", "codigo",
+				"restaurante.nome","restaurante.nome",
+				"nomeCliente", "cliente.nome",
+				"valorTotal","valorTotal	"
+				);
+		return PageableTranslator.translate(pageable, mapeamento);
 	}
 	
 	private void validarItens(Pedido pedido) {

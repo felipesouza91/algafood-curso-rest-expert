@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.felipe.algafood.api.dto.converters.RestauranteDtoManager;
 import com.felipe.algafood.api.dto.inputs.RestauranteInput;
 import com.felipe.algafood.api.dto.model.RestauranteModel;
+import com.felipe.algafood.api.view.RestauranteView;
 import com.felipe.algafood.domain.model.Restaurante;
 import com.felipe.algafood.domain.service.RestauranteService;
 
@@ -34,9 +36,16 @@ public class RestauranteController {
 	private RestauranteDtoManager restauranteDtoManager;
 	
 	@GetMapping
+	@JsonView(RestauranteView.Resumo.class)
 	public ResponseEntity<List<RestauranteModel>> buscarTodos() {
 		List<Restaurante> restaurantes = this.restauranteService.getRestauranteRepository().findAll();
 		return ResponseEntity.ok(restauranteDtoManager.toCollectionDtoModel(restaurantes));
+	}
+	
+	@GetMapping(params = "projecao=nome")
+	@JsonView(RestauranteView.ApenasNome.class)
+	public ResponseEntity<List<RestauranteModel>> buscarTodosComNome() {
+		return this.buscarTodos();
 	}
 	
 	@GetMapping("/{id}")

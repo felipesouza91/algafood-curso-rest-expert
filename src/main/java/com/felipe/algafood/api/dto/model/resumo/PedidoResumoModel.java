@@ -12,13 +12,13 @@ import lombok.Setter;
 @Setter
 public class PedidoResumoModel {
 
-	private Long id;
+	private String codigo;
 
 	private BigDecimal subTotal;
 
 	private BigDecimal taxaFrete;
 
-	private BigDecimal valoTotal;
+	private BigDecimal valorTotal;
 
 	private OffsetDateTime dataCriacao;
 
@@ -27,4 +27,5 @@ public class PedidoResumoModel {
 	private RestauranteResumoModel restaurante;
 
 	private UsuarioModel cliente;
+	
 }

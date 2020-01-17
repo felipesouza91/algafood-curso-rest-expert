@@ -1,10 +1,10 @@
 package com.felipe.algafood.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,11 +19,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.felipe.algafood.domain.exception.NegocioException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,17 +40,17 @@ public class Pedido {
 	@EqualsAndHashCode.Include
 	private Long id;
 	
-	@NotNull
+	@Column(name = "codigo", nullable = false, updatable = false)
+	private String codigo;
+	
 	@Column(name = "sub_total")
 	private BigDecimal subTotal;
 
-	@NotNull
 	@Column(name= "taxa_frete")
 	private BigDecimal taxaFrete;
-	
-	@NotNull
+
 	@Column(name = "valor_total")
-	private BigDecimal valoTotal;
+	private BigDecimal valorTotal;
 	
 	@CreationTimestamp
 	@Column(name= "data_criacao", updatable = false)
@@ -59,31 +60,25 @@ public class Pedido {
 	private OffsetDateTime dataConfirmacao;
 	
 	@Column(name = "data_cancelamento")
-	private LocalDateTime dataCancelamento;
+	private OffsetDateTime dataCancelamento;
 	
 	@Column(name = "data_entrega")
-	private LocalDateTime dataEntrega;
+	private OffsetDateTime dataEntrega;
 	
-	@NotNull
 	@Enumerated(EnumType.STRING)
 	private StatusPedido status = StatusPedido.CRIADO;
 	
-	@NotNull
 	@Embedded
 	private Endereco enderecoEntrega;
 	
-	@Valid
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "forma_pagamento_id", nullable = false)
 	private FormaPagamento formaPagamento;
 	
-	@Valid
 	@ManyToOne
 	@JoinColumn(name = "restaurante_id", nullable = false)
 	private Restaurante restaurante;
 	
-	
-	@Valid
 	@ManyToOne
 	@JoinColumn(name = "cliente_id", nullable = false)
 	private Usuario cliente;
@@ -99,8 +94,34 @@ public class Pedido {
 			.map(item -> item.getPrecoTotal())
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
-		this.valoTotal = this.subTotal.add(this.taxaFrete);
+		this.valorTotal = this.subTotal.add(this.taxaFrete);
 	}
 	
+	public void confirmar() {
+		this.setStatus(StatusPedido.CONFIRMADO);
+		this.setDataCriacao(OffsetDateTime.now());
+	}
 	
+	public void entregar() {
+		this.setStatus(StatusPedido.ENTREGUE);
+		this.setDataEntrega(OffsetDateTime.now());
+	}
+	
+	public void cancelar() {
+		this.setStatus(StatusPedido.CANCELADO);
+		this.setDataCancelamento(OffsetDateTime.now());
+	}
+	
+	private void setStatus(StatusPedido novoStatus) {
+		if(getStatus().naoPodeAlterarPara(novoStatus)) {
+			throw new NegocioException(String.format("Status do pedido %s não pode ser alterado de %s para %s",
+					this.getCodigo(), this.getStatus().getDescricao(), novoStatus.getDescricao()));
+		}
+		this.status= novoStatus; 
+	}
+	
+	@PrePersist
+	private void gerarCodigo() {
+		setCodigo(UUID.randomUUID().toString());
+	}
 }

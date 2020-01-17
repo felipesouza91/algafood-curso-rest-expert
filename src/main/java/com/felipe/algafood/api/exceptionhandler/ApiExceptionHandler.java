@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -102,15 +103,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return this.handlerInternalValidation(ex, ex.getBindingResult(), headers, status, request);
 		
 	}
-
-	private ResponseEntity<Object> handlerInternalValidation(Exception ex,
-			BindingResult bindingResult, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		String detail = "Um ou mais campos então invalidos. Faca o preenchimento correto e tente novamente";
-		List<Problem.Field> fields = this.buildFields(bindingResult.getAllErrors());
-		Problem problem = this.createProblemBuilder(status, ProblemType.DADOS_INVALIDOS, detail, detail).objects(fields).build();
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
 	
+	@Override
+	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
+			WebRequest request) {
+		return handlerInternalValidation(ex, ex.getBindingResult(), headers, status, request);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
@@ -121,16 +119,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return super.handleTypeMismatch(ex, headers, status, request);
 	}
 
-	private ResponseEntity<Object> handlerMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,  HttpHeaders headers,
-			HttpStatus status, WebRequest request){
-		String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
-						+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
-						ex.getName(),ex.getValue(),ex.getRequiredType().getSimpleName());
-		Problem problem = this.createProblemBuilder(status, ProblemType.PARAMETRO_INVALIDO, detail, MSG_ERRO_GENERICO_USUARIO_FINAL).build();
-		
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-	}
-	
 	@Override
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
@@ -139,7 +127,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(ex, problem ,headers, status, request);
 	}
 
-	
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
@@ -193,6 +180,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 				.detail(detail);
 	}
 	
+	private ResponseEntity<Object> handlerMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,  HttpHeaders headers,
+			HttpStatus status, WebRequest request){
+		String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
+						+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
+						ex.getName(),ex.getValue(),ex.getRequiredType().getSimpleName());
+		Problem problem = this.createProblemBuilder(status, ProblemType.PARAMETRO_INVALIDO, detail, MSG_ERRO_GENERICO_USUARIO_FINAL).build();
+		
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+	
 	private List<Field> buildFields(List<ObjectError> list) {
 		return list
 				.stream()
@@ -207,7 +204,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 				.collect(Collectors.toList());
 	}
 
-	
+	private ResponseEntity<Object> handlerInternalValidation(Exception ex,
+			BindingResult bindingResult, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		String detail = "Um ou mais campos então invalidos. Faca o preenchimento correto e tente novamente";
+		List<Problem.Field> fields = this.buildFields(bindingResult.getAllErrors());
+		Problem problem = this.createProblemBuilder(status, ProblemType.DADOS_INVALIDOS, detail, detail).objects(fields).build();
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+
 	private String joinPath(List<Reference> list) {
 		return list.stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
 	}

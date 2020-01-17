@@ -1,4 +1,4 @@
-package com.felipe.algafood.core;
+package com.felipe.algafood.core.validation;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 

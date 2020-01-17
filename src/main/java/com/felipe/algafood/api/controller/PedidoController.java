@@ -1,10 +1,11 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.felipe.algafood.api.dto.converters.PedidoDtoManager;
 import com.felipe.algafood.api.dto.inputs.PedidoInput;
 import com.felipe.algafood.api.dto.model.PedidoModel;
 import com.felipe.algafood.api.dto.model.resumo.PedidoResumoModel;
+import com.felipe.algafood.domain.filter.PedidoFilter;
 import com.felipe.algafood.domain.model.Pedido;
 import com.felipe.algafood.domain.service.PedidoService;
 
@@ -33,14 +35,15 @@ public class PedidoController {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<PedidoResumoModel> listarTodos() {
-		return dtoManager.toCollectionDtoResumoModel(this.pedidoService.buscarTodos());
+	public Page<PedidoResumoModel> listarTodos( PedidoFilter filter, Pageable pageable) {
+		Page<Pedido> page = this.pedidoService.buscarTodos(filter, pageable);
+		return new PageImpl<>(dtoManager.toCollectionDtoResumoModel(page.getContent()), pageable, page.getTotalElements());
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.OK)
-	public PedidoModel listarPorId(@PathVariable Long id) {
-		return dtoManager.conveterToDtoModel(this.pedidoService.buscarPorId(id));
+	public PedidoModel listarPorId(@PathVariable String codigo) {
+		return dtoManager.conveterToDtoModel(this.pedidoService.buscarPorCodigo(codigo));
 	}
 	
 	@PostMapping
