@@ -17,6 +17,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +34,7 @@ import com.felipe.algafood.core.validation.ValidacaoException;
 import com.felipe.algafood.domain.exception.EntidadeEmUsoException;
 import com.felipe.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.felipe.algafood.domain.exception.NegocioException;
+import com.felipe.algafood.domain.exception.StorageException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
@@ -81,6 +83,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	public ResponseEntity<?> handlerValidacaoException(ValidacaoException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		return this.handlerInternalValidation(ex, ex.getBindingResult(), new HttpHeaders(), status, request);
+	}
+	
+	@ExceptionHandler(StorageException.class)
+	public ResponseEntity<?> handleStorageException(StorageException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+		Problem problem = this.createProblemBuilder(status,ProblemType.ERRO_DE_SISTEMA, ex.getMessage(), MSG_ERRO_GENERICO_USUARIO_FINAL).build();
+		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		return ResponseEntity.status(status).headers(headers).build();
 	}
 	
 	@Override

@@ -46,7 +46,6 @@ public class PedidoService {
 	@Autowired
 	private UsuarioService usuarioService;
 
-	
 	@Transactional
 	public Page<Pedido> buscarTodos(PedidoFilter filter, Pageable pageable) {
 		pageable = this.traduzirPegeable(pageable);
@@ -82,7 +81,9 @@ public class PedidoService {
 	@Transactional
 	public void confirmar(String codigo) {
 		Pedido pedido = this.buscarPorCodigo(codigo);
-		pedido.confirmar();
+		pedido.confirmar(); 
+		pedidoRepository.save(pedido);
+		
 	}
 	
 	@Transactional

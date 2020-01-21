@@ -23,17 +23,19 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
+import com.felipe.algafood.domain.event.PedidoConfirmadoEvent;
 import com.felipe.algafood.domain.exception.NegocioException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true , callSuper = false)
 @Entity
 @Table(name = "pedido")
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido>{
 
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -100,6 +102,7 @@ public class Pedido {
 	public void confirmar() {
 		this.setStatus(StatusPedido.CONFIRMADO);
 		this.setDataCriacao(OffsetDateTime.now());
+		super.registerEvent(new PedidoConfirmadoEvent(this));
 	}
 	
 	public void entregar() {
