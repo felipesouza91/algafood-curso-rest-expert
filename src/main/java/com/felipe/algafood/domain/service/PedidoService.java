@@ -96,6 +96,7 @@ public class PedidoService {
 	public void cancelar(String codigo) {
 		Pedido pedido = this.buscarPorCodigo(codigo);
 		pedido.cancelar();
+		pedidoRepository.save(pedido);
 	}
 	
 	private void validarPedido(Pedido pedido) {
