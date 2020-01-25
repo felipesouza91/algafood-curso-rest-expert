@@ -10,8 +10,7 @@ import com.github.bohnman.squiggly.web.RequestSquigglyContextProvider;
 import com.github.bohnman.squiggly.web.SquigglyRequestFilter;
 
 @Configuration
-public class SquigglyConfig {
-
+public class SquigglyConfig{
 	@Bean
 	public FilterRegistrationBean<SquigglyRequestFilter> squillyRequestFilter(ObjectMapper mappers) {
 		Squiggly.init(mappers, new RequestSquigglyContextProvider());
@@ -20,4 +19,5 @@ public class SquigglyConfig {
 		filterRegistration.setOrder(1);
 		return filterRegistration;
 	}
+	
 }

@@ -44,9 +44,9 @@ public class EstadoController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> salvar (@RequestBody @Valid EstadoInput estadoInput) {
+	public ResponseEntity<EstadoModel> salvar (@RequestBody @Valid EstadoInput estadoInput) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(
-				this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput))
+				dtoManager.conveterToDtoModel(this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput)))
 				);
 	}
 	

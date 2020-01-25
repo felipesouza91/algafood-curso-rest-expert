@@ -1,11 +1,12 @@
 package com.felipe.algafood.api.controller;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +41,8 @@ public class RestauranteController {
 	@JsonView(RestauranteView.Resumo.class)
 	public ResponseEntity<List<RestauranteModel>> buscarTodos() {
 		List<Restaurante> restaurantes = this.restauranteService.getRestauranteRepository().findAll();
-		return ResponseEntity.ok(restauranteDtoManager.toCollectionDtoModel(restaurantes));
+		return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.body(restauranteDtoManager.toCollectionDtoModel(restaurantes));
 	}
 	
 	@GetMapping(params = "projecao=nome")
