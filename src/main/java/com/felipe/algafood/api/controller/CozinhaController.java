@@ -1,5 +1,7 @@
 package com.felipe.algafood.api.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +44,15 @@ public class CozinhaController {
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public Page<CozinhaModel> listar(Pageable pageable) {
-		Page<Cozinha> page = cozinhaRepository.findAll(pageable);
-		return new PageImpl<>(cozinhaDtoManager.toCollectionDtoModel(page.getContent()), pageable, page.getTotalElements());
+		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
+		
+		List<CozinhaModel> cozinhasModel = cozinhaDtoManager
+				.toCollectionDtoModel(cozinhasPage.getContent());
+		
+		Page<CozinhaModel> cozinhasModelPage = new PageImpl<>(cozinhasModel, pageable, 
+				cozinhasPage.getTotalElements());
+		
+		return cozinhasModelPage;
 	}
 	
 	@GetMapping("/{id}")

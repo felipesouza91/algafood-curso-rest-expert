@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,17 +15,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.CidadeControlerOpenApi;
 import com.felipe.algafood.api.dto.converters.CidadeDtoManager;
 import com.felipe.algafood.api.dto.inputs.CidadeInput;
 import com.felipe.algafood.api.dto.model.CidadeModel;
 import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.service.CidadeService;
 
+
 @RestController
-@RequestMapping("/cidades")
-public class CidadeController {
+@RequestMapping(path = "/cidades", produces  = MediaType.APPLICATION_JSON_VALUE)
+public class CidadeController implements CidadeControlerOpenApi{
 
 	@Autowired
 	private CidadeService cidadeService;
@@ -48,22 +52,24 @@ public class CidadeController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> salvar (@RequestBody @Valid CidadeInput cidadeInput) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public CidadeModel salvar (@RequestBody @Valid CidadeInput cidadeInput) {
 		Cidade cidade = this.cidadeDtoManager.converterToDomainObject(cidadeInput);
 		cidade = this.cidadeService.salvar(cidade);
-		return ResponseEntity.status(HttpStatus.CREATED).body(this.cidadeDtoManager.conveterToDtoModel(cidade));
+		return this.cidadeDtoManager.conveterToDtoModel(cidade);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody @Valid CidadeInput cidadeInput) {
+	@ResponseStatus(HttpStatus.OK)
+	public CidadeModel atualizar(@PathVariable Long id, @RequestBody @Valid  CidadeInput cidadeInput) {
 		Cidade cidade = cidadeService.atualizar(id, this.cidadeDtoManager.converterToDomainObject(cidadeInput));
-		return ResponseEntity.ok(this.cidadeDtoManager.conveterToDtoModel(cidade));
+		return this.cidadeDtoManager.conveterToDtoModel(cidade);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> excluir(@PathVariable Long id) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void excluir( @PathVariable Long id) {
 		cidadeService.excluir(id);
-		return ResponseEntity.noContent().build();
 	}
 	
 }
