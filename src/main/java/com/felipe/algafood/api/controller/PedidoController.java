@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.PedidoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.PedidoDtoManager;
 import com.felipe.algafood.api.dto.inputs.PedidoInput;
 import com.felipe.algafood.api.dto.model.PedidoModel;
@@ -25,7 +26,7 @@ import com.felipe.algafood.domain.service.PedidoService;
 
 @RestController
 @RequestMapping("/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi{
 
 	@Autowired
 	private PedidoService pedidoService;

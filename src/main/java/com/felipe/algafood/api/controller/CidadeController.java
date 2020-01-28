@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.felipe.algafood.api.docs.CidadeControlerOpenApi;
+import com.felipe.algafood.api.docs.CidadeControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.CidadeDtoManager;
 import com.felipe.algafood.api.dto.inputs.CidadeInput;
 import com.felipe.algafood.api.dto.model.CidadeModel;
@@ -28,7 +28,7 @@ import com.felipe.algafood.domain.service.CidadeService;
 
 @RestController
 @RequestMapping(path = "/cidades", produces  = MediaType.APPLICATION_JSON_VALUE)
-public class CidadeController implements CidadeControlerOpenApi{
+public class CidadeController implements CidadeControllerOpenApi{
 
 	@Autowired
 	private CidadeService cidadeService;

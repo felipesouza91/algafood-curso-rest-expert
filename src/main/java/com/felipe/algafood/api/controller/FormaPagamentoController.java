@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import com.felipe.algafood.api.docs.FormaPagamentoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.FormaPagamentoDtoManager;
 import com.felipe.algafood.api.dto.inputs.FormaPagamentoInput;
 import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
@@ -30,7 +31,7 @@ import com.felipe.algafood.domain.service.FormaPagamentoService;
 
 @RestController
 @RequestMapping("/formaspagamentos")
-public class FormaPagamentoController {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi{
 	
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;	
@@ -39,7 +40,6 @@ public class FormaPagamentoController {
 	private FormaPagamentoDtoManager dtoManager;
 
 	@GetMapping
-	
 	public ResponseEntity<List<FormaPagamentoModel>> listarTodos(ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		String etag = "0" ;
@@ -93,25 +93,5 @@ public class FormaPagamentoController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id) {
 		this.formaPagamentoService.excluir(id);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 }

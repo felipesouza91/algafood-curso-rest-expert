@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @Api(tags = "Cidades")
-public interface CidadeControlerOpenApi {
+public interface CidadeControllerOpenApi {
 	
 	@ApiOperation("Listar as cidades")
 	public ResponseEntity<List<CidadeModel>> buscar();
@@ -46,5 +46,5 @@ public interface CidadeControlerOpenApi {
 		@ApiResponse(code= 204, message = "Cidade excluida"),
 		@ApiResponse(code= 404, message = "Cidade não encontrada", response = Problem.class)
 	})
-	public void excluir(@ApiParam(value="ID de uma cidade", example = "1") Long id) ;
+	public void excluir(@ApiParam(value="ID de uma cidade", example = "1", required = true) Long id) ;
 }

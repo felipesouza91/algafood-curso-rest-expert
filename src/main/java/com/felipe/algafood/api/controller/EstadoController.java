@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.EstadoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.EstadoDtoManager;
 import com.felipe.algafood.api.dto.inputs.EstadoInput;
 import com.felipe.algafood.api.dto.model.EstadoModel;
@@ -25,7 +26,7 @@ import com.felipe.algafood.domain.service.EstadoService;
 
 @RestController
 @RequestMapping("/estados")
-public class EstadoController {
+public class EstadoController implements EstadoControllerOpenApi{
 
 	@Autowired
 	private EstadoService estadoService;
@@ -44,10 +45,10 @@ public class EstadoController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<EstadoModel> salvar (@RequestBody @Valid EstadoInput estadoInput) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(
-				dtoManager.conveterToDtoModel(this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput)))
-				);
+	@ResponseStatus(HttpStatus.CREATED)
+	public EstadoModel salvar (@RequestBody @Valid EstadoInput estadoInput) {
+		return dtoManager.conveterToDtoModel(this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput)));
+				
 	}
 	
 	@PutMapping("/{id}")

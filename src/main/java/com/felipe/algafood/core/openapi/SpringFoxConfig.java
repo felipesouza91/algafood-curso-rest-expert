@@ -10,14 +10,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.felipe.algafood.api.dto.model.CozinhaModel;
+import com.felipe.algafood.api.dto.model.resumo.PedidoResumoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
 import com.felipe.algafood.core.openapi.model.CozinhasModelOpenApi;
 import com.felipe.algafood.core.openapi.model.PageableModelOpenApi;
+import com.felipe.algafood.core.openapi.model.PedidosResumoModelOpenApi;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -41,9 +44,10 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	
 	private final ModelRef modelRef = new ModelRef("Problema");
 	
+	private TypeResolver typeResolver = new TypeResolver();
 	@Bean
 	public Docket apiDocket() {
-		TypeResolver typeResolver = new TypeResolver();
+		
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.felipe.algafood.api"))
@@ -54,11 +58,27 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 				.globalResponseMessage(RequestMethod.POST, this.globalPostResponseMethos())
 				.globalResponseMessage(RequestMethod.PUT, this.globalPutResponseMethos())
 				.globalResponseMessage(RequestMethod.DELETE, this.globalDeleteResponseMethos())
+				/*
+				 * Para fins de estudo
+				 * .globalOperationParameters(Arrays.asList(
+						new ParameterBuilder().name("campos")
+						.description("Nomes das propriedas para filtrar na resposta separados por virgula")
+						.parameterType("query")
+						.modelRef(new ModelRef("String")).build()
+						))*/ 
 				.additionalModels(typeResolver.resolve(Problem.class))
+				.ignoredParameterTypes(ServletWebRequest.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaModel.class), CozinhasModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoModel.class), PedidosResumoModelOpenApi.class))
 				.apiInfo(apiInfo()) 
-				.tags(new Tag("Cidades", "Gerencia a cidade"), new Tag("Grupos", "Gerencia de grupos"));
+				.tags(new Tag("Cidades", "Gerencia a cidade"),
+						new Tag("Grupos", "Gerencia de grupos"),
+						new Tag("Cozinhas", "Gerencia de cozinhas"),
+						new Tag("Formas Pagamentos", "Gerencia de formas pagamentos"),
+						new Tag("Pedidos", "Gerencia de pedidos"),
+						new Tag("Restaurantes", "Gerencia de restaurante"),
+						new Tag("Estados", "Gerencia de estados"));
 	}
 	
 	public ApiInfo apiInfo() {
@@ -67,7 +87,7 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 				.contact(new Contact("Felipe Souza", "felipedb91@hotmail.com", "felipedb91@hotmail.com"))
 				.build();
 	}
-	
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("swagger-ui.html")
@@ -76,7 +96,6 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 		registry.addResourceHandler("/webjars/**")
 		.addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
-	
 	
 	private List<ResponseMessage> globalGetResponseMethos() {
 		return Arrays.asList(

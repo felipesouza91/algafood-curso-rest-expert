@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.felipe.algafood.api.docs.RestauranteControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.RestauranteDtoManager;
 import com.felipe.algafood.api.dto.inputs.RestauranteInput;
 import com.felipe.algafood.api.dto.model.RestauranteModel;
@@ -29,7 +30,7 @@ import com.felipe.algafood.domain.service.RestauranteService;
 
 @RestController
 @RequestMapping("/restaurantes")
-public class RestauranteController {
+public class RestauranteController implements RestauranteControllerOpenApi{
 	
 	@Autowired
 	private RestauranteService restauranteService;
@@ -45,7 +46,8 @@ public class RestauranteController {
 				.body(restauranteDtoManager.toCollectionDtoModel(restaurantes));
 	}
 	
-	@GetMapping(params = "projecao=nome")
+	
+	@GetMapping(params = "projecao=apenas-nome")
 	@JsonView(RestauranteView.ApenasNome.class)
 	public ResponseEntity<List<RestauranteModel>> buscarTodosComNome() {
 		return this.buscarTodos();
@@ -59,17 +61,18 @@ public class RestauranteController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> cadastrar(@RequestBody  @Valid RestauranteInput restauranteModel) {
+	public RestauranteModel cadastrar(@RequestBody  @Valid RestauranteInput restauranteModel) {
 		Restaurante restaurante = restauranteDtoManager.converterToDomainObject(restauranteModel);
 		restaurante = restauranteService.salvar(restaurante);
-		return ResponseEntity.status(HttpStatus.CREATED).body(restauranteDtoManager.conveterToDtoModel(restaurante));
+		return restauranteDtoManager.conveterToDtoModel(restaurante);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar (@PathVariable Long id, @RequestBody  @Valid RestauranteInput restauranteInput){
+	@ResponseStatus(HttpStatus.OK)
+	public RestauranteModel atualizar (@PathVariable Long id, @RequestBody  @Valid RestauranteInput restauranteInput){
 		Restaurante restauranteAtual = this.restauranteService.buscarPorId(id); 
 		restauranteDtoManager.copyToDomainObject(restauranteInput, restauranteAtual);
-		return ResponseEntity.ok(restauranteDtoManager.conveterToDtoModel(this.restauranteService.atualizar(id, restauranteAtual)));
+		return restauranteDtoManager.conveterToDtoModel(this.restauranteService.atualizar(id, restauranteAtual));
 	}
 	
 	@PutMapping("/{id}/ativo")

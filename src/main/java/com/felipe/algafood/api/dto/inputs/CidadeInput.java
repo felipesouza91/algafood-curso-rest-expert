@@ -15,11 +15,12 @@ import lombok.Setter;
 public class CidadeInput {
 	
 	@NotBlank
-	@ApiModelProperty(example = "Uberlandia")
+	@ApiModelProperty(value = "Nome do estado",example = "Uberlandia", required = true)
 	private String nome;
 	
 	@Valid
 	@NotNull
+	@ApiModelProperty(value = "Representação de estado", required = true ,example = "")
 	private EstadoIdInput estado;
 
 }
