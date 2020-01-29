@@ -1,11 +1,17 @@
 package com.felipe.algafood.core.openapi;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLStreamHandler;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -67,7 +73,8 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 						.modelRef(new ModelRef("String")).build()
 						))*/ 
 				.additionalModels(typeResolver.resolve(Problem.class))
-				.ignoredParameterTypes(ServletWebRequest.class)
+				.ignoredParameterTypes(ServletWebRequest.class, URI.class, URL.class,URLStreamHandler.class, Resource.class, File.class,
+						InputStream.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaModel.class), CozinhasModelOpenApi.class))
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoModel.class), PedidosResumoModelOpenApi.class))
@@ -78,7 +85,10 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 						new Tag("Formas Pagamentos", "Gerencia de formas pagamentos"),
 						new Tag("Pedidos", "Gerencia de pedidos"),
 						new Tag("Restaurantes", "Gerencia de restaurante"),
-						new Tag("Estados", "Gerencia de estados"));
+						new Tag("Estados", "Gerencia de estados"),
+						new Tag("Produtos", "Gerencia de produtos"),
+						new Tag("Usuarios", "Gerencia de usuarios"),
+						new Tag("Estatisticas", "Gerencia de estatisticas"));
 	}
 	
 	public ApiInfo apiInfo() {

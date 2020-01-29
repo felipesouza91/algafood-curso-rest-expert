@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.RestauranteUsuarioControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.UsuarioDtoManager;
 import com.felipe.algafood.api.dto.model.UsuarioModel;
 import com.felipe.algafood.domain.model.Restaurante;
@@ -19,7 +20,7 @@ import com.felipe.algafood.domain.service.RestauranteService;
 
 @RestController
 @RequestMapping("/restaurantes/{id}/usuarios")
-public class RestauranteUsuarioController {
+public class RestauranteUsuarioController implements RestauranteUsuarioControllerOpenApi{
 
 	@Autowired
 	private RestauranteService restauranteService;

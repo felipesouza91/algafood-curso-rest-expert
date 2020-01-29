@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.RestauranteProdutoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.ProdutoDtoManager;
 import com.felipe.algafood.api.dto.inputs.ProdutoInput;
 import com.felipe.algafood.api.dto.model.ProdutoModel;
@@ -26,7 +27,7 @@ import com.felipe.algafood.domain.service.RestauranteService;
 
 @RestController
 @RequestMapping("/restaurantes/{idRestaurante}/produtos")
-public class RestauranteProdutoController {
+public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi {
 
 	@Autowired
 	private ProdutoService produtoService;
@@ -57,7 +58,7 @@ public class RestauranteProdutoController {
 		return this.dtoManager.conveterToDtoModel(produto);
 	}
 	
-	@PostMapping()
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoModel salvar(@PathVariable Long idRestaurante, @RequestBody @Valid ProdutoInput produtoInput) {
 		Restaurante restaurante = this.restauranteService.buscarPorId(idRestaurante);

@@ -22,7 +22,7 @@ public interface RestauranteControllerOpenApi {
 	
 	@ApiOperation(value = "Lista resturante" , response = RestauranteBasicModelOpenApi.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(value="Nome da projeção de pedidos", name="projecao", type="query",
+		@ApiImplicitParam(value="Nome da projeção de pedidos", name="projecao", dataType ="string",
 				paramType = "query",allowableValues = "apenas-nome")
 	})
 	public ResponseEntity<List<RestauranteModel>> buscarTodos();

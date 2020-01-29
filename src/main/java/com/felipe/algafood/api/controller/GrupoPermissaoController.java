@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.GrupoPermissaoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.PermissaoDtoManager;
 import com.felipe.algafood.api.dto.model.PermissaoModel;
 import com.felipe.algafood.domain.model.Grupo;
@@ -19,7 +20,7 @@ import com.felipe.algafood.domain.service.GrupoService;
 
 @RestController
 @RequestMapping("/grupos/{id}/permissoes")
-public class GrupoPermissaoController {
+public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi {
 
 	@Autowired
 	private GrupoService grupoService;

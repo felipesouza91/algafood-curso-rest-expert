@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.UsuarioGrupoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.GrupoDtoManager;
 import com.felipe.algafood.api.dto.model.GrupoModel;
 import com.felipe.algafood.domain.model.Usuario;
@@ -19,7 +20,7 @@ import com.felipe.algafood.domain.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios/{id}/grupos")
-public class UsuarioGrupoController {
+public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
 	@Autowired
 	private UsuarioService usuarioService;

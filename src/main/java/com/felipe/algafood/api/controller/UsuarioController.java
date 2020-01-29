@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.UsuarioControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.UsuarioDtoManager;
 import com.felipe.algafood.api.dto.inputs.UsuarioInput;
 import com.felipe.algafood.api.dto.inputs.UsuarioInputNoPassword;
@@ -26,7 +27,7 @@ import com.felipe.algafood.domain.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@Autowired
 	private UsuarioService usuarioService;

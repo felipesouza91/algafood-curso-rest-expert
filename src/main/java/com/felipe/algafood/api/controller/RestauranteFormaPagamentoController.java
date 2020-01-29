@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.docs.RestauranteFormaPagamentoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.FormaPagamentoDtoManager;
 import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
 import com.felipe.algafood.domain.model.Restaurante;
@@ -19,7 +20,7 @@ import com.felipe.algafood.domain.service.RestauranteService;
 
 @RestController
 @RequestMapping("/restaurantes/{id}/formas-pagamento")
-public class RestauranteFormaPagamentoController {
+public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi{
 
 	@Autowired
 	private RestauranteService restauranteService;
