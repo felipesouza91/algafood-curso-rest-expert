@@ -1,8 +1,6 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
+import org.springframework.hateoas.CollectionModel;
 
 import com.felipe.algafood.api.dto.inputs.CidadeInput;
 import com.felipe.algafood.api.dto.model.CidadeModel;
@@ -18,14 +16,14 @@ import io.swagger.annotations.ApiResponses;
 public interface CidadeControllerOpenApi {
 	
 	@ApiOperation("Listar as cidades")
-	public ResponseEntity<List<CidadeModel>> buscar();
+	public CollectionModel<CidadeModel> buscar();
 	
 	@ApiOperation("Busca a cidade por Id")
 	@ApiResponses({
 		@ApiResponse(code= 400, message = "Id da cidade invalido", response = Problem.class),
 		@ApiResponse(code= 404, message = "Cidade não encontrada", response = Problem.class)
 	})
-	public ResponseEntity<CidadeModel> buscarPorId(@ApiParam(value="ID de uma cidade", example = "1") Long id) ;
+	public CidadeModel buscarPorId(@ApiParam(value="ID de uma cidade", example = "1") Long id) ;
 	
 	@ApiOperation("Inserir um nova cidade")
 	@ApiResponses({

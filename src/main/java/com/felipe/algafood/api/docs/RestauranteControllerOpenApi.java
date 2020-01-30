@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import com.felipe.algafood.api.dto.inputs.RestauranteInput;
 import com.felipe.algafood.api.dto.model.RestauranteModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
-import com.felipe.algafood.core.openapi.model.RestauranteBasicModelOpenApi;
+import com.felipe.algafood.core.springfox.model.RestauranteBasicModelOpenApi;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

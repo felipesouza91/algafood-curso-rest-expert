@@ -1,4 +1,4 @@
-package com.felipe.algafood.core.openapi.model;
+package com.felipe.algafood.core.springfox.model;
 
 import com.felipe.algafood.api.dto.model.CozinhaModel;
 

@@ -1,4 +1,4 @@
-package com.felipe.algafood.core.openapi;
+package com.felipe.algafood.core.springfox;
 
 import java.io.File;
 import java.io.InputStream;
@@ -24,9 +24,9 @@ import com.fasterxml.classmate.TypeResolver;
 import com.felipe.algafood.api.dto.model.CozinhaModel;
 import com.felipe.algafood.api.dto.model.resumo.PedidoResumoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
-import com.felipe.algafood.core.openapi.model.CozinhasModelOpenApi;
-import com.felipe.algafood.core.openapi.model.PageableModelOpenApi;
-import com.felipe.algafood.core.openapi.model.PedidosResumoModelOpenApi;
+import com.felipe.algafood.core.springfox.model.CozinhasModelOpenApi;
+import com.felipe.algafood.core.springfox.model.PageableModelOpenApi;
+import com.felipe.algafood.core.springfox.model.PedidosResumoModelOpenApi;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
