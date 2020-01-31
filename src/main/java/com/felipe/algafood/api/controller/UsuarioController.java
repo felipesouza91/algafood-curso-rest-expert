@@ -1,10 +1,9 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,21 +36,21 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<UsuarioModel> listarTodos() {
-		return this.dtoManager.toCollectionDtoModel(this.usuarioService.buscarTodos());
+	public CollectionModel<UsuarioModel> listarTodos() {
+		return this.dtoManager.toCollectionModel(this.usuarioService.buscarTodos());
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public UsuarioModel listarPorCodigo(@PathVariable Long id) {
-		return this.dtoManager.conveterToDtoModel(this.usuarioService.buscarPorId(id));
+		return this.dtoManager.toModel(this.usuarioService.buscarPorId(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioModel salvar(@RequestBody @Valid UsuarioInput usuarioInput) {
 		Usuario usuario = this.dtoManager.converterToDomainObject(usuarioInput);
-		return this.dtoManager.conveterToDtoModel(this.usuarioService.salvar(usuario));
+		return this.dtoManager.toModel(this.usuarioService.salvar(usuario));
 	}
 	
 	@PutMapping("/{id}")
@@ -59,7 +58,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	public UsuarioModel atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioInputNoPassword usuarioinput) {
 		Usuario usuario = usuarioService.buscarPorId(id);
 		dtoManager.copyToDomainObject(usuarioinput, usuario);
-		return this.dtoManager.conveterToDtoModel(this.usuarioService.salvar(usuario));
+		return this.dtoManager.toModel(this.usuarioService.salvar(usuario));
 	}
 	
 	@PutMapping("/{id}/senha")

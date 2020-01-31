@@ -1,43 +1,47 @@
 package com.felipe.algafood.api.dto.converters;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.felipe.algafood.api.controller.EstadoController;
 import com.felipe.algafood.api.dto.inputs.EstadoInput;
 import com.felipe.algafood.api.dto.model.EstadoModel;
 import com.felipe.algafood.domain.model.Estado;
-import com.felipe.algafood.infrastructure.dto.ApplicationDtoManagerInterface;
 
 @Component
-public class EstadoDtoManager implements ApplicationDtoManagerInterface<Estado, EstadoModel, EstadoInput>{
+public class EstadoDtoManager extends RepresentationModelAssemblerSupport<Estado, EstadoModel>{
+	
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	public EstadoDtoManager() {
+		super(EstadoController.class, EstadoModel.class);
+	}
+
 
 	@Override
-	public EstadoModel conveterToDtoModel(Estado object) {
-		return modelMapper.map(object, EstadoModel.class);
+	public EstadoModel toModel(Estado estado) {
+		EstadoModel estadoModel = createModelWithId(estado.getId(), estado);
+		modelMapper.map(estado, estadoModel);
+		estadoModel.add(linkTo(EstadoController.class).withRel("estados"));
+		return estadoModel;
 	}
 
 	@Override
-	public List<EstadoModel> toCollectionDtoModel(Collection<Estado> listDomainObject) {
-		return listDomainObject
-				.stream()
-				.map(estado -> conveterToDtoModel(estado))
-					.collect(Collectors.toList());
+	public CollectionModel<EstadoModel> toCollectionModel(Iterable<? extends Estado> entities) {
+		return super.toCollectionModel(entities).add(linkTo(EstadoController.class).withSelfRel());
 	}
 
-	@Override
 	public Estado converterToDomainObject(EstadoInput objectInput) {
 		return modelMapper.map(objectInput, Estado.class);
 	}
 
-	@Override
 	public void copyToDomainObject(EstadoInput objectInput, Estado object) {
 		modelMapper.map(objectInput, object);
 		

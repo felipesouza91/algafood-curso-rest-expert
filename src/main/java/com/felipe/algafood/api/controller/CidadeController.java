@@ -1,15 +1,11 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,33 +38,15 @@ public class CidadeController implements CidadeControllerOpenApi{
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public CollectionModel<CidadeModel> buscar() {
-		List<CidadeModel> list = cidadeDtoManager.toCollectionDtoModel(this.cidadeService.getCidadeRepository().findAll());
-		CollectionModel<CidadeModel> collection = new CollectionModel<>(list);
-		collection.forEach(cidadeModel -> {
-			cidadeModel.add(WebMvcLinkBuilder.linkTo(
-					WebMvcLinkBuilder.methodOn(CidadeController.class).buscarPorId(cidadeModel.getId())).withSelfRel()
-					);
-			cidadeModel.add(WebMvcLinkBuilder.linkTo(this.getClass()).withRel("cidades"));
-			cidadeModel.getEstado().add(WebMvcLinkBuilder.linkTo(
-					WebMvcLinkBuilder.methodOn(EstadoController.class).buscarPorId(cidadeModel.getEstado().getId())).withSelfRel()
-					);
-			
-		});
-		collection.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
-		return collection;
+		
+		//collection.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
+		return cidadeDtoManager.toCollectionModel(this.cidadeService.getCidadeRepository().findAll());
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public CidadeModel buscarPorId(@PathVariable Long id) {
-		CidadeModel cidadeModel = cidadeDtoManager.conveterToDtoModel(this.cidadeService.buscarPorId(id)) ;
-		cidadeModel.add(WebMvcLinkBuilder.linkTo(
-				WebMvcLinkBuilder.methodOn(CidadeController.class).buscarPorId(cidadeModel.getId())).withSelfRel()
-				);
-		cidadeModel.add(WebMvcLinkBuilder.linkTo(this.getClass()).withRel("cidades"));
-		cidadeModel.getEstado().add(WebMvcLinkBuilder.linkTo(
-				WebMvcLinkBuilder.methodOn(EstadoController.class).buscarPorId(cidadeModel.getEstado().getId())).withSelfRel()
-				);
+		CidadeModel cidadeModel = cidadeDtoManager.toModel(this.cidadeService.buscarPorId(id)) ;
 		return cidadeModel;
 	}
 	
@@ -78,14 +56,14 @@ public class CidadeController implements CidadeControllerOpenApi{
 		Cidade cidade = this.cidadeDtoManager.converterToDomainObject(cidadeInput);
 		cidade = this.cidadeService.salvar(cidade);
 		ResourceUriHelper.addUriInResponseHeader(cidade.getId());
-		return this.cidadeDtoManager.conveterToDtoModel(cidade);
+		return this.cidadeDtoManager.toModel(cidade);
 	}
 	
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public CidadeModel atualizar(@PathVariable Long id, @RequestBody @Valid  CidadeInput cidadeInput) {
 		Cidade cidade = cidadeService.atualizar(id, this.cidadeDtoManager.converterToDomainObject(cidadeInput));
-		return this.cidadeDtoManager.conveterToDtoModel(cidade);
+		return this.cidadeDtoManager.toModel(cidade);
 	}
 	
 	@DeleteMapping("/{id}")

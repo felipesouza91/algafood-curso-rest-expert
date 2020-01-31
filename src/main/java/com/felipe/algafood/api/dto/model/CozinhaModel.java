@@ -1,5 +1,8 @@
 package com.felipe.algafood.api.dto.model;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import com.fasterxml.jackson.annotation.JsonView;
 import com.felipe.algafood.api.view.RestauranteView;
 
@@ -9,7 +12,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CozinhaModel {
+@Relation(collectionRelation = "cozinhas")
+public class CozinhaModel  extends RepresentationModel<CozinhaModel>{
 
 	@JsonView(RestauranteView.Resumo.class)
 	@ApiModelProperty(value = "Codigo da cozinha", example = "10")

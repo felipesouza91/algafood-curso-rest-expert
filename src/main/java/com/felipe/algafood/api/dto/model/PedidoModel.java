@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.felipe.algafood.api.dto.model.resumo.RestauranteResumoModel;
 
 import lombok.Getter;
@@ -12,7 +14,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PedidoModel {
+public class PedidoModel extends RepresentationModel<PedidoModel>{
 	
 	private String codigo;
 	

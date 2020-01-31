@@ -1,8 +1,10 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +32,10 @@ public class RestauranteUsuarioController implements RestauranteUsuarioControlle
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<UsuarioModel> listarTodosUsuarios(@PathVariable Long id) {
+	public CollectionModel<UsuarioModel> listarTodosUsuarios(@PathVariable Long id) {
 		Restaurante restaurante = this.restauranteService.buscarPorId(id);
-		return this.dtoManager.toCollectionDtoModel(restaurante.getResponsaveis());
+		return this.dtoManager.toCollectionModel(restaurante.getResponsaveis()).removeLinks()
+				.add(linkTo(methodOn(this.getClass()).listarTodosUsuarios(id)).withSelfRel());
 	}
 	
 	@PutMapping("/{idUsuario}")

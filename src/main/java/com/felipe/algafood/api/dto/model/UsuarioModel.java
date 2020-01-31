@@ -1,12 +1,16 @@
 package com.felipe.algafood.api.dto.model;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UsuarioModel {
+@Relation(collectionRelation = "usuarios")
+public class UsuarioModel extends RepresentationModel<UsuarioModel> {
 	
 	@ApiModelProperty(value = "Id do Cliente", example = "1")
 	private Long id;

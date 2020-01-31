@@ -1,42 +1,39 @@
 package com.felipe.algafood.api.dto.converters;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.felipe.algafood.api.controller.CozinhaController;
 import com.felipe.algafood.api.dto.inputs.CozinhaInput;
 import com.felipe.algafood.api.dto.model.CozinhaModel;
 import com.felipe.algafood.domain.model.Cozinha;
-import com.felipe.algafood.infrastructure.dto.ApplicationDtoManagerInterface;
 
 @Component
-public class CozinhaDtoManager implements ApplicationDtoManagerInterface<Cozinha, CozinhaModel, CozinhaInput> {
-	
+public class CozinhaDtoManager extends RepresentationModelAssemblerSupport<Cozinha, CozinhaModel> {
+
 	@Autowired
 	private ModelMapper modelMapper;
-
-	@Override
-	public CozinhaModel conveterToDtoModel(Cozinha object) {
-		return modelMapper.map(object, CozinhaModel.class);
+	
+	public CozinhaDtoManager() {
+		super(CozinhaController.class, CozinhaModel.class);
 	}
 
 	@Override
-	public List<CozinhaModel> toCollectionDtoModel(Collection<Cozinha> listDomainObject) {
-		return listDomainObject
-				.stream()
-				.map(cozinha -> conveterToDtoModel(cozinha)).collect(Collectors.toList());
+	public CozinhaModel toModel(Cozinha object) {
+		CozinhaModel cozinhaModel = createModelWithId(object.getId(), object);
+		modelMapper.map(object, cozinhaModel);
+		cozinhaModel.add(linkTo(CozinhaController.class).withSelfRel());
+		return cozinhaModel;
 	}
 
-	@Override
 	public Cozinha converterToDomainObject(CozinhaInput objectInput) {
 		return modelMapper.map(objectInput, Cozinha.class);
 	}
 
-	@Override
 	public void copyToDomainObject(CozinhaInput objectInput, Cozinha object) {
 		modelMapper.map(objectInput, object);
 	}

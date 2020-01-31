@@ -2,6 +2,8 @@ package com.felipe.algafood.api.docs;
 
 import java.util.List;
 
+import org.springframework.hateoas.CollectionModel;
+
 import com.felipe.algafood.api.dto.inputs.UsuarioInput;
 import com.felipe.algafood.api.dto.inputs.UsuarioInputNoPassword;
 import com.felipe.algafood.api.dto.inputs.UsuarioSenhaInput;
@@ -18,7 +20,7 @@ import io.swagger.annotations.ApiResponses;
 public interface UsuarioControllerOpenApi {
 
 	@ApiOperation("Listar usuarios")
-	public List<UsuarioModel> listarTodos();
+	public CollectionModel<UsuarioModel> listarTodos();
 	
 	@ApiOperation("Listar usuario por codigo")
 	@ApiResponses({

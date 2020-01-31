@@ -1,7 +1,6 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
-
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 
 import com.felipe.algafood.api.dto.inputs.EstadoInput;
@@ -18,14 +17,14 @@ import io.swagger.annotations.ApiResponses;
 public interface EstadoControllerOpenApi {
 
 	@ApiOperation("Buscar Estados")
-	public ResponseEntity<List<EstadoModel>> buscar();
+	public CollectionModel<EstadoModel> buscar();
 	
 	@ApiOperation("Buscar Estados por id")
 	@ApiResponses({
 		@ApiResponse(code= 400, message = "Id da estado invalido", response = Problem.class),
 		@ApiResponse(code= 404, message = "Estado não encontrada", response = Problem.class)
 	})
-	public ResponseEntity<EstadoModel> buscarPorId(@ApiParam(value = "Codigo de um estado", required = true)Long id);
+	public EstadoModel buscarPorId(@ApiParam(value = "Codigo de um estado", required = true)Long id);
 
 	@ApiOperation("Cadastrar estado")
 	@ApiResponses({

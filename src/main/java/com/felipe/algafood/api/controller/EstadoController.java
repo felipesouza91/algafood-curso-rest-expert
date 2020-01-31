@@ -1,10 +1,9 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,19 +34,20 @@ public class EstadoController implements EstadoControllerOpenApi{
 	private EstadoDtoManager dtoManager;
 	
 	@GetMapping
-	public ResponseEntity<List<EstadoModel>> buscar() {
-		return ResponseEntity.ok().body(dtoManager.toCollectionDtoModel(this.estadoService.getEstadoRepository().findAll()));
+	@ResponseStatus(HttpStatus.OK)
+	public CollectionModel<EstadoModel> buscar() {
+		return dtoManager.toCollectionModel(this.estadoService.getEstadoRepository().findAll());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<EstadoModel> buscarPorId(@PathVariable Long id) {
-		return ResponseEntity.ok(dtoManager.conveterToDtoModel(this.estadoService.buscarPorId(id)));
+	public EstadoModel buscarPorId(@PathVariable Long id) {
+		return dtoManager.toModel(this.estadoService.buscarPorId(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoModel salvar (@RequestBody @Valid EstadoInput estadoInput) {
-		return dtoManager.conveterToDtoModel(this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput)));
+		return dtoManager.toModel(this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput)));
 				
 	}
 	
@@ -55,7 +55,7 @@ public class EstadoController implements EstadoControllerOpenApi{
 	public ResponseEntity<EstadoModel> atualizar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput) {
 		Estado estado = estadoService.buscarPorId(id);
 		dtoManager.copyToDomainObject(estadoInput, estado);
-		return ResponseEntity.ok(dtoManager.conveterToDtoModel(this.estadoService.salvar(estado)));
+		return ResponseEntity.ok(dtoManager.toModel(this.estadoService.salvar(estado)));
 	}
 	
 	@DeleteMapping("/{id}")

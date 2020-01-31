@@ -2,6 +2,7 @@ package com.felipe.algafood.api.docs;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 import com.felipe.algafood.api.dto.inputs.CozinhaInput;
@@ -18,14 +19,14 @@ import io.swagger.annotations.ApiResponses;
 public interface CozinhaControllerOpenApi {
 	
 	@ApiOperation("Listar cozinhas")
-	public Page<CozinhaModel> listar(Pageable pageable);
+	public PagedModel<CozinhaModel> listar(Pageable pageable);
 	
 	@ApiOperation("Listar uma cozinha")
 	@ApiResponses({
 		@ApiResponse(code= 400, message = "Id da cozinha invalido", response = Problem.class),
 		@ApiResponse(code= 404, message = "Cozinha não encontrada", response = Problem.class)
 	})
-	public ResponseEntity<CozinhaModel> buscarPorId(@ApiParam(value = "Codigo de uma cozinha", example = "1") Long id);
+	public CozinhaModel buscarPorId(@ApiParam(value = "Codigo de uma cozinha", example = "1") Long id);
 	
 	@ApiOperation("Cadastrar uma nova cozinha")
 	@ApiResponses({

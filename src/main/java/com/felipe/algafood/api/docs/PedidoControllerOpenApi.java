@@ -1,7 +1,7 @@
 package com.felipe.algafood.api.docs;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 import com.felipe.algafood.api.dto.inputs.PedidoInput;
 import com.felipe.algafood.api.dto.model.PedidoModel;
@@ -25,7 +25,7 @@ public interface PedidoControllerOpenApi {
 		@ApiImplicitParam(value = "Nomes das propriedas para filtrar na resposta separados por virgula",name = "campos" ,
 				dataTypeClass  = String.class, paramType = "query")
 	})
-	public Page<PedidoResumoModel> listarTodos(@ApiParam(name = "Filtro", value = "Campos para serem aplicados filtros no pedido") PedidoFilter filter,
+	public PagedModel<PedidoResumoModel> listarTodos(@ApiParam(name = "Filtro", value = "Campos para serem aplicados filtros no pedido") PedidoFilter filter,
 			Pageable pageable);
 
 	@ApiOperation("Busca a pedido por codigo")

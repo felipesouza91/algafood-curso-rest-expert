@@ -1,6 +1,6 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 import com.felipe.algafood.api.dto.model.UsuarioModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
@@ -19,7 +19,7 @@ public interface RestauranteUsuarioControllerOpenApi {
 		@ApiResponse(code=400, message = "Codigo invalido", response = Problem.class),
 		@ApiResponse(code=404, message = "Restaurante não encontrado", response = Problem.class)
 	})
-	public List<UsuarioModel> listarTodosUsuarios(@ApiParam(value = "Codigo de um restaurante", required = true) Long id) ;
+	public CollectionModel<UsuarioModel> listarTodosUsuarios(@ApiParam(value = "Codigo de um restaurante", required = true) Long id) ;
 	
 	@ApiOperation("Associar responsavel ao restaurante")
 	@ApiResponses({

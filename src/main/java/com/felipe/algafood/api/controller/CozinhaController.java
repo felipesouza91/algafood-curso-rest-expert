@@ -1,13 +1,12 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,39 +40,38 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@Autowired
 	private CozinhaDtoManager cozinhaDtoManager;
 	
+	@Autowired
+	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembled;
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Page<CozinhaModel> listar(Pageable pageable) {
+	public PagedModel<CozinhaModel> listar(Pageable pageable) {
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 		
-		List<CozinhaModel> cozinhasModel = cozinhaDtoManager
-				.toCollectionDtoModel(cozinhasPage.getContent());
+		PagedModel<CozinhaModel> cozinhasPagedModel = pagedResourcesAssembled.toModel(cozinhasPage,cozinhaDtoManager);
 		
-		Page<CozinhaModel> cozinhasModelPage = new PageImpl<>(cozinhasModel, pageable, 
-				cozinhasPage.getTotalElements());
-		
-		return cozinhasModelPage;
+		return cozinhasPagedModel;
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<CozinhaModel> buscarPorId(@PathVariable Long id) {
+	@ResponseStatus(HttpStatus.OK)
+	public CozinhaModel buscarPorId(@PathVariable Long id) {
 		this.cozinhaService.buscarPorId(id);
-		return ResponseEntity.ok().body(cozinhaDtoManager.conveterToDtoModel(this.cozinhaService.buscarPorId(id)));
+		return cozinhaDtoManager.toModel(this.cozinhaService.buscarPorId(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaModel savar (@RequestBody @Valid CozinhaInput cozinhaInput) {
 		Cozinha cozinha = cozinhaDtoManager.converterToDomainObject(cozinhaInput);
-		return cozinhaDtoManager.conveterToDtoModel(cozinhaService.salvar(cozinha));
+		return cozinhaDtoManager.toModel(cozinhaService.salvar(cozinha));
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<CozinhaModel> atualizar(@PathVariable Long id, @RequestBody @Valid CozinhaInput cozinhaInput) {
 		Cozinha cozinhaAtual = this.cozinhaService.buscarPorId(id);
 		cozinhaDtoManager.copyToDomainObject(cozinhaInput, cozinhaAtual);
-		return ResponseEntity.ok(cozinhaDtoManager.conveterToDtoModel(cozinhaService.salvar(cozinhaAtual)));
+		return ResponseEntity.ok(cozinhaDtoManager.toModel(cozinhaService.salvar(cozinhaAtual)));
 	}
 	
 	@DeleteMapping("/{id}")
