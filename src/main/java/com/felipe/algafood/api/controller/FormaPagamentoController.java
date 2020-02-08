@@ -1,12 +1,12 @@
 package com.felipe.algafood.api.controller;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +40,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	private FormaPagamentoDtoManager dtoManager;
 
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoModel>> listarTodos(ServletWebRequest request) {
+	public ResponseEntity<CollectionModel<FormaPagamentoModel>> listarTodos(ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		String etag = "0" ;
 		OffsetDateTime ultimaDataAtualizacao = this.formaPagamentoService.getFormaPagamentoRepository().getDataUltimaAtualizacao();
@@ -50,8 +50,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		if(request.checkNotModified(etag)) {
 			return null;
 		}
-		List<FormaPagamentoModel> listFormaPagamentoModel = this.dtoManager.toCollectionDtoModel(this.formaPagamentoService.findAll());
-		
+		CollectionModel<FormaPagamentoModel> listFormaPagamentoModel = this.dtoManager.toCollectionModel(this.formaPagamentoService.findAll());
 		return  ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
 				.eTag(etag)
@@ -71,14 +70,14 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		}
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
-				.body(this.dtoManager.conveterToDtoModel(this.formaPagamentoService.buscarById(id))); 
+				.body(this.dtoManager.toModel(this.formaPagamentoService.buscarById(id))); 
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoModel criar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 		FormaPagamento formaPagamento = this.dtoManager.converterToDomainObject(formaPagamentoInput);
-		return this.dtoManager.conveterToDtoModel(this.formaPagamentoService.salvar(formaPagamento));
+		return this.dtoManager.toModel(this.formaPagamentoService.salvar(formaPagamento));
 	}
 	
 	@PutMapping("/{id}")
@@ -86,7 +85,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	public FormaPagamentoModel atualizar(@PathVariable Long id, @RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 		FormaPagamento formaPagamento = this.formaPagamentoService.buscarById(id);
 		dtoManager.copyToDomainObject(formaPagamentoInput, formaPagamento );
-		return this.dtoManager.conveterToDtoModel(this.formaPagamentoService.salvar(formaPagamento));
+		return this.dtoManager.toModel(this.formaPagamentoService.salvar(formaPagamento));
 	}
 	
 	@DeleteMapping("/{id}")

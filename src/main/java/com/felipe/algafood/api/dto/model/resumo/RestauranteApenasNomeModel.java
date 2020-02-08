@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RestauranteResumoModel  extends RepresentationModel<RestauranteResumoModel>{
+public class RestauranteApenasNomeModel  extends RepresentationModel<RestauranteApenasNomeModel>{
 
 	@ApiModelProperty(value = "Id do restaurante", example = "1")
 	private Long id;

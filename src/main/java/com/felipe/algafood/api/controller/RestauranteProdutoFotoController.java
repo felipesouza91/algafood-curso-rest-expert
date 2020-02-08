@@ -53,7 +53,7 @@ public class RestauranteProdutoFotoController implements RestauranteFotoProdutoC
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public FotoProdutoModel buscarFoto(@PathVariable Long restId,@PathVariable Long prodId) {
-		return dtoManager.conveterToDtoModel(fotoService.buscarFotoProtudo(restId, prodId));
+		return dtoManager.toModel(fotoService.buscarFotoProtudo(restId, prodId));
 	}
 	
 	@GetMapping(produces = MediaType.ALL_VALUE)
@@ -89,7 +89,7 @@ public class RestauranteProdutoFotoController implements RestauranteFotoProdutoC
 			foto.setDescricao(produtoInput.getDescricao());
 			foto.setNomeArquivo(arquivo.getOriginalFilename());
 			foto.setTamanho(arquivo.getSize());
-			return dtoManager.conveterToDtoModel(fotoService.salvar(foto, arquivo.getInputStream()));
+			return dtoManager.toModel(fotoService.salvar(foto, arquivo.getInputStream()));
 		
 	}
 	

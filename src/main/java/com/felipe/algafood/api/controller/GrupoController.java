@@ -1,10 +1,9 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,24 +32,25 @@ public class GrupoController implements GrupoControllerOpenApi {
 	
 	@Autowired
 	private GrupoDtoManager dtoManager;
+
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<GrupoModel> listarTodos() {
-		return this.dtoManager.toCollectionDtoModel(this.grupoService.buscarTodos());
+	public CollectionModel<GrupoModel> listarTodos() {
+		return this.dtoManager.toCollectionModel(this.grupoService.buscarTodos());
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public GrupoModel listaPorId(@PathVariable Long id) {
-		return this.dtoManager.conveterToDtoModel(this.grupoService.buscarPorId(id));
+		return this.dtoManager.toModel(this.grupoService.buscarPorId(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoModel salvar( @RequestBody @Valid GrupoInput grupoInput) {
 		Grupo grupo = this.dtoManager.converterToDomainObject(grupoInput);
-		return this.dtoManager.conveterToDtoModel(this.grupoService.salvar(grupo));
+		return this.dtoManager.toModel(this.grupoService.salvar(grupo));
 	}
 	
 	@PutMapping("/{id}")
@@ -58,7 +58,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	public GrupoModel atualizar(@PathVariable Long id, @RequestBody @Valid GrupoInput grupoInput) {
 		Grupo grupoSalvo = this.grupoService.buscarPorId(id);
 		this.dtoManager.copyToDomainObject(grupoInput, grupoSalvo);
-		return this.dtoManager.conveterToDtoModel(this.grupoService.salvar(grupoSalvo));
+		return this.dtoManager.toModel(this.grupoService.salvar(grupoSalvo));
 	}
 	
 	@DeleteMapping("/{id}")

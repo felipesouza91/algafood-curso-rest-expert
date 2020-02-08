@@ -1,6 +1,7 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import com.felipe.algafood.api.dto.model.PermissaoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
@@ -19,14 +20,14 @@ public interface GrupoPermissaoControllerOpenApi {
 		@ApiResponse(code = 400, message = "ID de grupo invalido", response = Problem.class),
 		@ApiResponse(code = 404, message = "Grupo não foi encontrado", response = Problem.class)
 	})
-	public List<PermissaoModel> listarTodos(@ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long id) ;
+	public CollectionModel<PermissaoModel> listarTodos(@ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long id) ;
 
 	@ApiOperation("Associar uma permisão a um grupo")
 	@ApiResponses({
 		@ApiResponse(code = 204, message = "Associação realizada com sucesso"),
 		@ApiResponse(code = 404, message = "Grupo ou permissão não encontrado", response = Problem.class)
 	})
-	public void associar(@ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long id,
+	public ResponseEntity<Void>  associar(@ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long id,
 			@ApiParam(value = "Codigo da permissão", required = true, example = "1") Long idPermissao) ;
 	
 	@ApiOperation("Desassociar uma permisão a um grupo")
@@ -34,6 +35,6 @@ public interface GrupoPermissaoControllerOpenApi {
 		@ApiResponse(code = 204, message = "Desassociação realizada com sucesso"),
 		@ApiResponse(code = 404, message = "Grupo ou permissão não encontrado", response = Problem.class)
 	})
-	public void desassociar( @ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long id, 
+	public ResponseEntity<Void>  desassociar( @ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long id, 
 			@ApiParam(value = "Codigo da permissão", required = true, example = "1") Long idPermissao) ;
 }

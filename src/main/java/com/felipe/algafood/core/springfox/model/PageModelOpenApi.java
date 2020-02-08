@@ -1,20 +1,15 @@
 package com.felipe.algafood.core.springfox.model;
 
-import java.util.List;
-
-import com.felipe.algafood.api.dto.model.CozinhaModel;
-
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
-public class PageModelOpenApi<T> {
-
-	private List<CozinhaModel> content;
-
+@ApiModel("PageModel")
+public class PageModelOpenApi {
+	
 	@ApiModelProperty(example = "10", value = "Numero de registro por paginas")
 	private int size;
 	

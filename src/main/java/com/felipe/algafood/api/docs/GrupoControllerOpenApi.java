@@ -1,6 +1,6 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 import com.felipe.algafood.api.dto.inputs.GrupoInput;
 import com.felipe.algafood.api.dto.model.GrupoModel;
@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiResponses;
 public interface GrupoControllerOpenApi {
 
 	@ApiOperation("Listar Grupos")
-	public List<GrupoModel> listarTodos() ;
+	public CollectionModel<GrupoModel> listarTodos() ;
 	
 	@ApiOperation("Listar grupo pelo codigo")
 	@ApiResponses({

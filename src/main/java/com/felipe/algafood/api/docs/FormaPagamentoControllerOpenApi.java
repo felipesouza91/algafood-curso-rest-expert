@@ -1,13 +1,13 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
-
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import com.felipe.algafood.api.dto.inputs.FormaPagamentoInput;
 import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
+import com.felipe.algafood.core.springfox.model.FormasPagamentosModelOpenApi;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,10 +18,10 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "Formas Pagamentos")
 public interface FormaPagamentoControllerOpenApi {
 
-	@ApiOperation("Listar formas de pagamentos")
-	public ResponseEntity<List<FormaPagamentoModel>> listarTodos(ServletWebRequest request);
+	@ApiOperation(value = "Listar formas de pagamentos", response = FormasPagamentosModelOpenApi.class)
+	public ResponseEntity<CollectionModel<FormaPagamentoModel>> listarTodos(ServletWebRequest request);
 	
-	@ApiOperation("Listar forma de pagamento por id")
+	@ApiOperation( value = "Listar forma de pagamento por id")
 	@ApiResponses({
 		@ApiResponse(code= 400, message = "Id de forma de pagamento invalido", response = Problem.class),
 		@ApiResponse(code= 404, message = "Forma de pagamento não encontrada", response = Problem.class)

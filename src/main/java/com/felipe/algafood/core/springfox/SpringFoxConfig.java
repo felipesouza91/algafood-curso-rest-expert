@@ -12,8 +12,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -21,12 +23,29 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.classmate.TypeResolver;
+import com.felipe.algafood.api.dto.model.CidadeModel;
 import com.felipe.algafood.api.dto.model.CozinhaModel;
+import com.felipe.algafood.api.dto.model.EstadoModel;
+import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
+import com.felipe.algafood.api.dto.model.GrupoModel;
+import com.felipe.algafood.api.dto.model.PermissaoModel;
+import com.felipe.algafood.api.dto.model.ProdutoModel;
+import com.felipe.algafood.api.dto.model.RestauranteBasicModel;
+import com.felipe.algafood.api.dto.model.UsuarioModel;
 import com.felipe.algafood.api.dto.model.resumo.PedidoResumoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
+import com.felipe.algafood.core.springfox.model.CidadesModelOpenApi;
 import com.felipe.algafood.core.springfox.model.CozinhasModelOpenApi;
+import com.felipe.algafood.core.springfox.model.EstadosModelOpenApi;
+import com.felipe.algafood.core.springfox.model.FormasPagamentosModelOpenApi;
+import com.felipe.algafood.core.springfox.model.GruposModelOpenApi;
+import com.felipe.algafood.core.springfox.model.LinksModelOpenApi;
 import com.felipe.algafood.core.springfox.model.PageableModelOpenApi;
 import com.felipe.algafood.core.springfox.model.PedidosResumoModelOpenApi;
+import com.felipe.algafood.core.springfox.model.PermissoesModelOpenApi;
+import com.felipe.algafood.core.springfox.model.ProdutosModelOpenApi;
+import com.felipe.algafood.core.springfox.model.RestaurantesModelOpenApi;
+import com.felipe.algafood.core.springfox.model.UsuariosModelOpenApi;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -76,8 +95,27 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 				.ignoredParameterTypes(ServletWebRequest.class, URI.class, URL.class,URLStreamHandler.class, Resource.class, File.class,
 						InputStream.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
-				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaModel.class), CozinhasModelOpenApi.class))
-				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoModel.class), PedidosResumoModelOpenApi.class))
+				.directModelSubstitute(Links.class,LinksModelOpenApi.class)
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(PagedModel.class, CozinhaModel.class), CozinhasModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(PagedModel.class, PedidoResumoModel.class), PedidosResumoModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, CidadeModel.class), CidadesModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, EstadoModel.class), EstadosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, FormaPagamentoModel.class), FormasPagamentosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, PermissaoModel.class), PermissoesModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, ProdutoModel.class), ProdutosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, RestauranteBasicModel.class), RestaurantesModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, UsuarioModel.class), UsuariosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, GrupoModel.class), GruposModelOpenApi.class))
 				.apiInfo(apiInfo()) 
 				.tags(new Tag("Cidades", "Gerencia a cidade"),
 						new Tag("Grupos", "Gerencia de grupos"),
@@ -88,7 +126,9 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 						new Tag("Estados", "Gerencia de estados"),
 						new Tag("Produtos", "Gerencia de produtos"),
 						new Tag("Usuarios", "Gerencia de usuarios"),
-						new Tag("Estatisticas", "Gerencia de estatisticas"));
+						new Tag("Estatisticas", "Gerencia de estatisticas"),
+						new Tag("Permissoes", "Listar Permissoes"),
+						new Tag("Root", "Lista os links da api"));
 	}
 	
 	public ApiInfo apiInfo() {

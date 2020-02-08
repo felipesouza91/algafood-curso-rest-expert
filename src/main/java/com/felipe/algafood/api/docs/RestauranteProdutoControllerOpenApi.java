@@ -1,6 +1,6 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 import com.felipe.algafood.api.dto.inputs.ProdutoInput;
 import com.felipe.algafood.api.dto.model.ProdutoModel;
@@ -26,7 +26,8 @@ public interface RestauranteProdutoControllerOpenApi {
 		@ApiImplicitParam(value = "Indica se deve incluir produtos inativos", dataType = "boolean", paramType = "query", 
 				defaultValue = "false", name = "incluirInativo")
 	})
-	public List<ProdutoModel> buscarTodos(@ApiParam(value = "Codigo do restaurante", required = true) Long idRestaurante, boolean incluirInativo) ;
+	public CollectionModel<ProdutoModel>  buscarTodos(
+			@ApiParam(value = "Codigo do restaurante", required = true) Long idRestaurante, Boolean incluirInativo) ;
 	
 	@ApiOperation("Listar um produto de restaurante")
 	@ApiResponses({

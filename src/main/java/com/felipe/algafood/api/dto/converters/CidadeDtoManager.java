@@ -1,17 +1,14 @@
 package com.felipe.algafood.api.dto.converters;
 
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.felipe.algafood.api.AlgaLinks;
 import com.felipe.algafood.api.controller.CidadeController;
-import com.felipe.algafood.api.controller.EstadoController;
 import com.felipe.algafood.api.dto.inputs.CidadeInput;
 import com.felipe.algafood.api.dto.model.CidadeModel;
 import com.felipe.algafood.domain.model.Cidade;
@@ -19,11 +16,12 @@ import com.felipe.algafood.domain.model.Estado;
 
 @Component
 public class CidadeDtoManager extends RepresentationModelAssemblerSupport<Cidade, CidadeModel> {
-	
-	
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private AlgaLinks algaLinks;
 	
 	public CidadeDtoManager() {
 		super(CidadeController.class, CidadeModel.class);
@@ -33,16 +31,16 @@ public class CidadeDtoManager extends RepresentationModelAssemblerSupport<Cidade
 	public CidadeModel toModel(Cidade cidade) {
 		CidadeModel cidadeModel = createModelWithId(cidade.getId(), cidade);
 		modelMapper.map(cidade, cidadeModel);
-		cidadeModel.add(linkTo(methodOn(CidadeController.class).buscar()).withRel("cidades"));
+		cidadeModel.add(algaLinks.LinkToCidades("cidades"));
 		
-		cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class).buscarPorId(cidadeModel.getEstado().getId())).withSelfRel());
+		cidadeModel.getEstado().add(algaLinks.linkToEstado(cidadeModel.getEstado().getId()));
 		
 		return cidadeModel;
 	}
 	
 	@Override
 	public CollectionModel<CidadeModel> toCollectionModel(Iterable<? extends Cidade> entities) {
-		return super.toCollectionModel(entities).add(linkTo(CidadeController.class).withSelfRel());
+		return super.toCollectionModel(entities).add(algaLinks.LinkToCidades());
 	}
 	
 	public Cidade converterToDomainObject(CidadeInput cidadeInput) {

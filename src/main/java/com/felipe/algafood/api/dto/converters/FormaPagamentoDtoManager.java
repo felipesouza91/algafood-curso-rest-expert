@@ -1,45 +1,51 @@
 package com.felipe.algafood.api.dto.converters;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.felipe.algafood.api.AlgaLinks;
+import com.felipe.algafood.api.controller.FormaPagamentoController;
 import com.felipe.algafood.api.dto.inputs.FormaPagamentoInput;
 import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
 import com.felipe.algafood.domain.model.FormaPagamento;
-import com.felipe.algafood.infrastructure.dto.ApplicationDtoManagerInterface;
 
 @Component
-public class FormaPagamentoDtoManager implements
-						ApplicationDtoManagerInterface<FormaPagamento, FormaPagamentoModel, FormaPagamentoInput> {
+public class FormaPagamentoDtoManager extends RepresentationModelAssemblerSupport<FormaPagamento, FormaPagamentoModel> {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private AlgaLinks algaLinks;
+	
+	public FormaPagamentoDtoManager() {
+		super(FormaPagamentoController.class, FormaPagamentoModel.class);
+	}
 
 	@Override
-	public FormaPagamentoModel conveterToDtoModel(FormaPagamento formaPagamento) {
-		return modelMapper.map(formaPagamento, FormaPagamentoModel.class);
+	public FormaPagamentoModel toModel(FormaPagamento entity) {
+		FormaPagamentoModel model = createModelWithId(entity.getId(), entity);
+		modelMapper.map(entity, model);
+		model.add(algaLinks.linkToFormasPagamentos("formas-pagamentos"));
+		return model;
 	}
 	
 	@Override
-	public List<FormaPagamentoModel> toCollectionDtoModel( Collection<FormaPagamento> listFormaPagamentos) {
-		return listFormaPagamentos
-				.stream()
-				.map(formaPagamento -> conveterToDtoModel(formaPagamento)).collect(Collectors.toList());
+	public CollectionModel<FormaPagamentoModel> toCollectionModel(Iterable<? extends FormaPagamento> entities) {
+		return super.toCollectionModel(entities).add(algaLinks.linkToFormasPagamentos());
 	}
-	
-	@Override
+
 	public FormaPagamento converterToDomainObject(FormaPagamentoInput formaPagamentoInput) {
 		return modelMapper.map(formaPagamentoInput, FormaPagamento.class);
 	}
 
-	@Override
 	public void copyToDomainObject(FormaPagamentoInput objectInput, FormaPagamento object) {
 		modelMapper.map(objectInput, object);
 	}
+
+	
 
 }

@@ -1,6 +1,7 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
@@ -19,7 +20,7 @@ public interface RestauranteFormaPagamentoControllerOpenApi {
 		@ApiResponse(code= 400, message = "Id da resturante invalido", response = Problem.class),
 		@ApiResponse(code= 404, message = "Restaurante não encontrado", response = Problem.class)
 	})
-	public List<FormaPagamentoModel> listarTodos(@ApiParam(value = "Codigo de um restaurante", required = true) Long id);
+	public CollectionModel<FormaPagamentoModel> listarTodos(@ApiParam(value = "Codigo de um restaurante", required = true) Long id);
 	
 	@ApiOperation("Associar forma de pagamento a Restaurante")
 	@ApiResponses({
@@ -27,7 +28,7 @@ public interface RestauranteFormaPagamentoControllerOpenApi {
 		@ApiResponse(code= 400, message = "Codigo invalido", response = Problem.class),
 		@ApiResponse(code= 404, message = "Representação não encontrada", response = Problem.class)
 	})
-	public void associar(@ApiParam(value = "Codigo de um restaurante", required = true) Long id, 
+	public ResponseEntity<Void>  associar(@ApiParam(value = "Codigo de um restaurante", required = true) Long id, 
 			@ApiParam(value = "Codigo da forma de pagamento", required = true)Long idFormaPagamento) ;
 	
 	@ApiOperation("Desassociar forma de pagamento de Restaurante")
@@ -36,6 +37,6 @@ public interface RestauranteFormaPagamentoControllerOpenApi {
 		@ApiResponse(code= 400, message = "Codigo invalido", response = Problem.class),
 		@ApiResponse(code= 404, message = "Representação não encontrada", response = Problem.class)
 	})
-	public void desassociar( @ApiParam(value = "Codigo de um restaurante", required = true) Long id, 
+	public ResponseEntity<Void>  desassociar( @ApiParam(value = "Codigo de um restaurante", required = true) Long id, 
 			@ApiParam(value = "Codigo da forma de pagamento", required = true)Long idFormaPagamento) ;
 }

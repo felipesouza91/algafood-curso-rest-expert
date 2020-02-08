@@ -1,6 +1,7 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import com.felipe.algafood.api.dto.model.GrupoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
@@ -19,7 +20,7 @@ public interface UsuarioGrupoControllerOpenApi {
 		@ApiResponse(code = 400, message = "ID do usuario invalida", response = Problem.class),
 		@ApiResponse(code = 404, message = "Usuario não encontrado", response = Problem.class)
 	})
-	public List<GrupoModel> listarTodos(@ApiParam(value = "Codigo de um usuario", required = true, example = "1") Long id);
+	public CollectionModel<GrupoModel> listarTodos(@ApiParam(value = "Codigo de um usuario", required = true, example = "1") Long id);
 	
 	@ApiOperation("Associar grupo a um usuario")
 	@ApiResponses({
@@ -27,7 +28,7 @@ public interface UsuarioGrupoControllerOpenApi {
 		@ApiResponse(code = 400, message = "Id do Usuario ou Grupo invalidas", response = Problem.class),
 		@ApiResponse(code = 404, message = "Usuario ou Grupo não encontrado", response = Problem.class),
 	})
-	public void associarGrupo(@ApiParam(value = "Codigo de um usuario", required = true, example = "1") Long id, 
+	public ResponseEntity<Void> associarGrupo(@ApiParam(value = "Codigo de um usuario", required = true, example = "1") Long id, 
 			@ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long idGrupo);
 	
 	@ApiOperation("Associar grupo a um usuario")
@@ -36,6 +37,6 @@ public interface UsuarioGrupoControllerOpenApi {
 		@ApiResponse(code = 400, message = "Id do Usuario ou Grupo invalidas", response = Problem.class),
 		@ApiResponse(code = 404, message = "Usuario ou Grupo não encontrado", response = Problem.class),
 	})
-	public void desassociarGrupo(@ApiParam(value = "Codigo de um usuario", required = true, example = "1") Long id,
+	public ResponseEntity<Void> desassociarGrupo(@ApiParam(value = "Codigo de um usuario", required = true, example = "1") Long id,
 			@ApiParam(value = "Codigo de um grupo", required = true, example = "1") Long idGrupo) ;
 }

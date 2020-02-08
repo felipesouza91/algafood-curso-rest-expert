@@ -1,7 +1,5 @@
 package com.felipe.algafood.api.docs;
 
-import java.util.List;
-
 import org.springframework.hateoas.CollectionModel;
 
 import com.felipe.algafood.api.dto.inputs.UsuarioInput;

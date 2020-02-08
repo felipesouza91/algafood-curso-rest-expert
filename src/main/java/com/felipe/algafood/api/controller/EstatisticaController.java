@@ -3,6 +3,7 @@ package com.felipe.algafood.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.AlgaLinks;
 import com.felipe.algafood.api.docs.EstatisticasControllerOpenApi;
 import com.felipe.algafood.domain.filter.VendaDiariaFilter;
 import com.felipe.algafood.domain.model.aggregation.VendaDiaria;
@@ -27,6 +29,17 @@ public class EstatisticaController implements EstatisticasControllerOpenApi {
 	
 	@Autowired
 	private VendaReportService vendaReportService;
+	
+	@Autowired
+	private AlgaLinks algaLinks;
+	
+	@GetMapping
+	public EstatisticaModel entryPointEstatistica() {
+		var estatisticaModel = new EstatisticaModel();
+		estatisticaModel.add(algaLinks.linkToEstatisticaVendaDireta("vendas-diarias"));
+		return estatisticaModel;
+	}
+	
 	
 	@Override
 	@GetMapping(path = "/vendas-diarias")
@@ -45,4 +58,6 @@ public class EstatisticaController implements EstatisticasControllerOpenApi {
 		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vendas-diarias.pdf");
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers).body(bytesPdf);
 	}
+	
+	private static class EstatisticaModel extends RepresentationModel<EstatisticaModel> {}
 }

@@ -1,20 +1,13 @@
 package com.felipe.algafood.api.dto.converters;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.felipe.algafood.api.controller.CidadeController;
-import com.felipe.algafood.api.controller.FormaPagamentoController;
+import com.felipe.algafood.api.AlgaLinks;
 import com.felipe.algafood.api.controller.PedidoController;
-import com.felipe.algafood.api.controller.RestauranteController;
-import com.felipe.algafood.api.controller.RestauranteProdutoController;
-import com.felipe.algafood.api.controller.UsuarioController;
 import com.felipe.algafood.api.dto.inputs.PedidoInput;
 import com.felipe.algafood.api.dto.model.PedidoModel;
 import com.felipe.algafood.domain.model.Pedido;
@@ -25,6 +18,9 @@ public class PedidoDtoManager extends RepresentationModelAssemblerSupport<Pedido
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private AlgaLinks algaLinks;
 
 	public PedidoDtoManager() {
 		super(PedidoController.class, PedidoModel.class);
@@ -36,23 +32,22 @@ public class PedidoDtoManager extends RepresentationModelAssemblerSupport<Pedido
 	public PedidoModel toModel(Pedido pedido) {
 		PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
 		modelMapper.map(pedido, pedidoModel);
-		pedidoModel.add(linkTo(PedidoController.class).withRel("pedidos"));
-		pedidoModel.getEnderecoEntrega().getCidade().add(linkTo(
-						methodOn(CidadeController.class).buscarPorId(pedidoModel.getEnderecoEntrega().getCidade().getId())).withSelfRel()
-				);
-		pedidoModel.getFormaPagamento().add(linkTo(
-					methodOn(FormaPagamentoController.class).buscarPorId(pedidoModel.getFormaPagamento().getId(),null)).withSelfRel()
-				);
-		pedidoModel.getRestaurante().add(linkTo(
-					methodOn(RestauranteController.class).buscarPorId(pedidoModel.getRestaurante().getId())).withSelfRel()
-				);
-		pedidoModel.getCliente().add(linkTo(
-					methodOn(UsuarioController.class).listarPorCodigo(pedidoModel.getCliente().getId())).withSelfRel()
-				);
+		if(pedido.podeSerConfirmado() ) {
+			pedidoModel.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+		}
+		if(pedido.podeSerEntregue()) {
+			pedidoModel.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+		}
+		if( pedido.podeSerCancelado() ) {
+			pedidoModel.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));	
+		}
+		pedidoModel.add(algaLinks.linkToPedidos("pedidos"));
+		pedidoModel.getEnderecoEntrega().getCidade().add(algaLinks.linkToCidade(pedidoModel.getEnderecoEntrega().getCidade().getId()));
+		pedidoModel.getFormaPagamento().add(algaLinks.linkToFormaPagamento(pedidoModel.getFormaPagamento().getId()));
+		pedidoModel.getRestaurante().add(algaLinks.linkToRestaurante(pedidoModel.getRestaurante().getId()));
+		pedidoModel.getCliente().add(algaLinks.linkToUsuario(pedidoModel.getCliente().getId()));
 		pedidoModel.getItens().forEach(item -> {
-			item.add(linkTo(
-					methodOn(RestauranteProdutoController.class).buscarPorId(pedidoModel.getRestaurante().getId(), item.getProdutoId())
-					).withRel("produto"));
+			item.add(algaLinks.linkToProduto(pedidoModel.getRestaurante().getId(), item.getProdutoId(), "produto"));
 		});
 		return pedidoModel;
 	}
@@ -60,7 +55,7 @@ public class PedidoDtoManager extends RepresentationModelAssemblerSupport<Pedido
 	@Override
 	public CollectionModel<PedidoModel> toCollectionModel(Iterable<? extends Pedido> entities) {
 		// TODO Auto-generated method stub
-		return super.toCollectionModel(entities);
+		return super.toCollectionModel(entities).add(algaLinks.linkToPedidos());
 	}
 	
 	public Pedido converterToDomainObject(PedidoInput pedidoInput) {

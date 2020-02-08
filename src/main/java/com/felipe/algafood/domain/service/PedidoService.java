@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.felipe.algafood.core.data.PageWrapper;
 import com.felipe.algafood.core.data.PageableTranslator;
 import com.felipe.algafood.domain.exception.EntidadeEmUsoException;
 import com.felipe.algafood.domain.exception.NegocioException;
@@ -48,8 +49,10 @@ public class PedidoService {
 
 	@Transactional
 	public Page<Pedido> buscarTodos(PedidoFilter filter, Pageable pageable) {
-		pageable = this.traduzirPegeable(pageable);
-		return this.pedidoRepository.findAll(PedidosSpecs.findWithFilter(filter), pageable);
+		Pageable pageableTranslate = this.traduzirPegeable(pageable);
+		Page<Pedido> pedidoPage = this.pedidoRepository.findAll(PedidosSpecs.findWithFilter(filter), pageableTranslate);
+		pedidoPage = new PageWrapper<>(pedidoPage, pageable);
+		return pedidoPage;
 	}
 	
 	@Transactional
@@ -120,7 +123,7 @@ public class PedidoService {
 	private Pageable traduzirPegeable(Pageable pageable) {
 		var mapeamento = ImmutableMap.of(
 				"codigo", "codigo",
-				"restaurante.nome","restaurante.nome",
+				"nomerestaurante","restaurante.nome",
 				"nomeCliente", "cliente.nome",
 				"valorTotal","valorTotal	"
 				);

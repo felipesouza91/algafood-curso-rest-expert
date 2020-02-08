@@ -1,10 +1,9 @@
 package com.felipe.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.felipe.algafood.api.AlgaLinks;
 import com.felipe.algafood.api.docs.RestauranteProdutoControllerOpenApi;
 import com.felipe.algafood.api.dto.converters.ProdutoDtoManager;
 import com.felipe.algafood.api.dto.inputs.ProdutoInput;
@@ -38,16 +38,21 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	@Autowired
 	private ProdutoDtoManager dtoManager;
 	
+	@Autowired
+	private AlgaLinks algaLinks;
+	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<ProdutoModel> buscarTodos(@PathVariable Long idRestaurante, @RequestParam(required = false) boolean incluirInativo) {
+	public CollectionModel<ProdutoModel> buscarTodos(@PathVariable Long idRestaurante,
+			@RequestParam(required = false, defaultValue = "false") Boolean incluirInativo) {
 		Restaurante restaurante = restauranteService.buscarPorId(idRestaurante);
+		CollectionModel<ProdutoModel> collection = null;
 		if (incluirInativo) {
-			return this.dtoManager.toCollectionDtoModel(this.produtoService.getProdutoRepository().findByRestaurante(restaurante));
+			collection = this.dtoManager.toCollectionModel(this.produtoService.getProdutoRepository().findByRestaurante(restaurante));
 		} else {
-			return this.dtoManager.toCollectionDtoModel(this.produtoService.getProdutoRepository().findAtivoByRestaurante(restaurante));	
+			collection = this.dtoManager.toCollectionModel(this.produtoService.getProdutoRepository().findAtivoByRestaurante(restaurante));
 		}
-		
+		return collection.add(algaLinks.linkToProdutos(idRestaurante));
 	}
 	
 	@GetMapping("/{idProduto}")
@@ -55,7 +60,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	public ProdutoModel buscarPorId(@PathVariable Long idRestaurante, @PathVariable Long idProduto) {
 		restauranteService.buscarPorId(idRestaurante);
 		Produto produto = this.produtoService.buscarPorIdRestauranteEProduto(idRestaurante, idProduto);
-		return this.dtoManager.conveterToDtoModel(produto);
+		return this.dtoManager.toModel(produto);
 	}
 	
 	@PostMapping
@@ -64,7 +69,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		Restaurante restaurante = this.restauranteService.buscarPorId(idRestaurante);
 		Produto produto = this.dtoManager.converterToDomainObject(produtoInput);
 		produto.setRestaurante(restaurante);
-		return this.dtoManager.conveterToDtoModel(this.produtoService.salvar(produto));
+		return this.dtoManager.toModel(this.produtoService.salvar(produto));
 	}
 	
 	@PutMapping("/{idProduto}")
@@ -74,6 +79,6 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		this.restauranteService.buscarPorId(idRestaurante);
 		Produto produtoAtual = this.produtoService.buscarPorIdRestauranteEProduto(idRestaurante, idProduto);
 		dtoManager.copyToDomainObject(produtoInput, produtoAtual);
-		return this.dtoManager.conveterToDtoModel(this.produtoService.salvar(produtoAtual));
+		return this.dtoManager.toModel(this.produtoService.salvar(produtoAtual));
 	}
 }

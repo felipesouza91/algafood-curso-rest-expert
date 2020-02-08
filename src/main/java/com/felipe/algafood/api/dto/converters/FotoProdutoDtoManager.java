@@ -2,19 +2,32 @@ package com.felipe.algafood.api.dto.converters;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.felipe.algafood.api.AlgaLinks;
+import com.felipe.algafood.api.controller.RestauranteProdutoFotoController;
 import com.felipe.algafood.api.dto.model.FotoProdutoModel;
 import com.felipe.algafood.domain.model.FotoProduto;
 
 @Component
-public class FotoProdutoDtoManager {
+public class FotoProdutoDtoManager extends RepresentationModelAssemblerSupport<FotoProduto, FotoProdutoModel>{
 	
 	@Autowired
 	private ModelMapper modelMapper;
-
 	
-	public FotoProdutoModel conveterToDtoModel(FotoProduto foto) {
-		return modelMapper.map(foto, FotoProdutoModel.class);
+	@Autowired
+	private AlgaLinks algaLinks;
+
+	public FotoProdutoDtoManager() {
+		super(RestauranteProdutoFotoController.class, FotoProdutoModel.class);
+	}
+	
+	@Override
+	public FotoProdutoModel toModel(FotoProduto entity) {
+		FotoProdutoModel model = modelMapper.map(entity, FotoProdutoModel.class);
+		model.add(algaLinks.linkToProdutoFoto(entity.getRestauranteId(), entity.getId()));
+		model.add(algaLinks.linkToProduto(entity.getRestauranteId(), entity.getId(), "produto"));
+		return model;
 	}
 }

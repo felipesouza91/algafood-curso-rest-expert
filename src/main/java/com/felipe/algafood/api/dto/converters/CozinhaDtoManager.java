@@ -1,12 +1,11 @@
 package com.felipe.algafood.api.dto.converters;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.felipe.algafood.api.AlgaLinks;
 import com.felipe.algafood.api.controller.CozinhaController;
 import com.felipe.algafood.api.dto.inputs.CozinhaInput;
 import com.felipe.algafood.api.dto.model.CozinhaModel;
@@ -18,6 +17,9 @@ public class CozinhaDtoManager extends RepresentationModelAssemblerSupport<Cozin
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private AlgaLinks algaLinks;
+	
 	public CozinhaDtoManager() {
 		super(CozinhaController.class, CozinhaModel.class);
 	}
@@ -26,7 +28,7 @@ public class CozinhaDtoManager extends RepresentationModelAssemblerSupport<Cozin
 	public CozinhaModel toModel(Cozinha object) {
 		CozinhaModel cozinhaModel = createModelWithId(object.getId(), object);
 		modelMapper.map(object, cozinhaModel);
-		cozinhaModel.add(linkTo(CozinhaController.class).withSelfRel());
+		cozinhaModel.add(algaLinks.linkToCozinhas("cozinhas"));
 		return cozinhaModel;
 	}
 

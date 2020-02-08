@@ -1,6 +1,7 @@
 package com.felipe.algafood.api.docs;
 
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import com.felipe.algafood.api.dto.model.UsuarioModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
@@ -27,7 +28,7 @@ public interface RestauranteUsuarioControllerOpenApi {
 		@ApiResponse(code=400, message = "Codigo invalido", response = Problem.class),
 		@ApiResponse(code=404, message = "Representação não encontrado", response = Problem.class)
 	})
-	public void associarResponsavel(@ApiParam(value = "Codigo de um restaurante", required = true) Long id,
+	public ResponseEntity<Void> associarResponsavel(@ApiParam(value = "Codigo de um restaurante", required = true) Long id,
 			@ApiParam(value = "Codigo de um usuario", required = true)Long idUsuario);
 	
 	@ApiOperation("Desassociar responsavel ao restaurante")
@@ -36,6 +37,6 @@ public interface RestauranteUsuarioControllerOpenApi {
 		@ApiResponse(code=400, message = "Codigo invalido", response = Problem.class),
 		@ApiResponse(code=404, message = "Representação não encontrado", response = Problem.class)
 	})
-	public void desassociarResponsavel(@ApiParam(value = "Codigo de um restaurante", required = true) Long id,
+	public ResponseEntity<Void> desassociarResponsavel(@ApiParam(value = "Codigo de um restaurante", required = true) Long id,
 			@ApiParam(value = "Codigo de um usuario", required = true)Long idUsuario);
 }

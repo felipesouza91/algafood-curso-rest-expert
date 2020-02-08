@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.felipe.algafood.api.dto.model.resumo.RestauranteResumoModel;
+import com.felipe.algafood.api.dto.model.resumo.RestauranteApenasNomeModel;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +38,7 @@ public class PedidoModel extends RepresentationModel<PedidoModel>{
 	
 	private FormaPagamentoModel formaPagamento;
 	
-	private RestauranteResumoModel restaurante;
+	private RestauranteApenasNomeModel restaurante;
 	
 	private UsuarioModel cliente;
 	
