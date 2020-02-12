@@ -2,7 +2,7 @@ package com.felipe.algafood.core.springfox.model;
 
 import java.util.List;
 
-import com.felipe.algafood.api.dto.model.CozinhaModel;
+import com.felipe.algafood.api.v1.dto.model.CozinhaModel;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

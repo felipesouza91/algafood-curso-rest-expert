@@ -10,12 +10,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.felipe.algafood.domain.model.Cozinha;
 import com.felipe.algafood.domain.model.Produto;
 import com.felipe.algafood.domain.model.Restaurante;
-import com.felipe.algafood.domain.service.CozinhaService;
-import com.felipe.algafood.domain.service.ProdutoService;
-import com.felipe.algafood.domain.service.RestauranteService;
 import com.felipe.algafood.util.BasicMethodsTest;
 import com.felipe.algafood.util.DatabaseCleaner;
 import com.felipe.algafood.util.FabricaDeEntidades;
@@ -29,12 +25,6 @@ public class RestauranteProdutoControllerIT implements BasicMethodsTest {
 
 	@LocalServerPort
 	private int port = 8080;
-
-	@Autowired
-	private ProdutoService produtoService;
-
-	@Autowired
-	private RestauranteService restauranteService;
 	
 	@Autowired
 	private FabricaDeEntidades entityFacotry;
@@ -44,8 +34,10 @@ public class RestauranteProdutoControllerIT implements BasicMethodsTest {
 	@Autowired
 	private DatabaseCleaner databaseCleaner;
 	
+	@SuppressWarnings("unused")
 	private String produtoComCampoAMais;
 
+	@SuppressWarnings("unused")
 	private int totalDeProdutosPreparadas;
 
 	@Before

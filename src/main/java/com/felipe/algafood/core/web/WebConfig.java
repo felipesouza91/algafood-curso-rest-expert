@@ -9,13 +9,28 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer{
+public class WebConfig implements WebMvcConfigurer {
+	
+	/*
+	 *Para fins de estudo
+	 * @Autowired
+		private ApiDeprecationHandler apiDeprecationHandler;
+	 */
+	
 	
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 			.allowedMethods("*");
 	}
+	
+	/*Para fins de estudo
+	 * @Override
+	 * public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(apiDeprecationHandler);
+		}
+	 */
+	
 	
 	@Bean
 	public Filter shallowEtagHeaderFilter() {

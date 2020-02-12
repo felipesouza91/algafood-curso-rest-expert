@@ -36,6 +36,9 @@ import com.felipe.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.felipe.algafood.domain.exception.NegocioException;
 import com.felipe.algafood.domain.exception.StorageException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	
@@ -74,7 +77,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 				+ "Tente novamente e se o problema persistir, entre em contato "
 				+ "com o administrador do sistema.";
 		Problem problem = this.createProblemBuilder(status,ProblemType.ERRO_DE_SISTEMA, detail, MSG_ERRO_GENERICO_USUARIO_FINAL).build();
-		ex.printStackTrace();
+		//ex.printStackTrace();
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
@@ -161,6 +164,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 					.build();
 
 		}
+		log.error(ex.getMessage(), ex);
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 	

@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.felipe.algafood.api.dto.inputs.UsuarioInput;
-import com.felipe.algafood.api.dto.inputs.UsuarioInputNoPassword;
-import com.felipe.algafood.api.dto.inputs.UsuarioSenhaInput;
 import com.felipe.algafood.api.exceptionhandler.ProblemType;
+import com.felipe.algafood.api.v1.dto.inputs.UsuarioInput;
+import com.felipe.algafood.api.v1.dto.inputs.UsuarioInputNoPassword;
+import com.felipe.algafood.api.v1.dto.inputs.UsuarioSenhaInput;
 import com.felipe.algafood.domain.model.Usuario;
 import com.felipe.algafood.domain.service.UsuarioService;
 import com.felipe.algafood.util.DatabaseCleaner;

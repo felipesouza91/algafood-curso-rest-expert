@@ -23,18 +23,20 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.classmate.TypeResolver;
-import com.felipe.algafood.api.dto.model.CidadeModel;
-import com.felipe.algafood.api.dto.model.CozinhaModel;
-import com.felipe.algafood.api.dto.model.EstadoModel;
-import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
-import com.felipe.algafood.api.dto.model.GrupoModel;
-import com.felipe.algafood.api.dto.model.PermissaoModel;
-import com.felipe.algafood.api.dto.model.ProdutoModel;
-import com.felipe.algafood.api.dto.model.RestauranteBasicModel;
-import com.felipe.algafood.api.dto.model.UsuarioModel;
-import com.felipe.algafood.api.dto.model.resumo.PedidoResumoModel;
 import com.felipe.algafood.api.exceptionhandler.Problem;
+import com.felipe.algafood.api.v1.dto.model.CidadeModel;
+import com.felipe.algafood.api.v1.dto.model.CozinhaModel;
+import com.felipe.algafood.api.v1.dto.model.EstadoModel;
+import com.felipe.algafood.api.v1.dto.model.FormaPagamentoModel;
+import com.felipe.algafood.api.v1.dto.model.GrupoModel;
+import com.felipe.algafood.api.v1.dto.model.PermissaoModel;
+import com.felipe.algafood.api.v1.dto.model.ProdutoModel;
+import com.felipe.algafood.api.v1.dto.model.RestauranteBasicModel;
+import com.felipe.algafood.api.v1.dto.model.UsuarioModel;
+import com.felipe.algafood.api.v1.dto.model.resumo.PedidoResumoModel;
+import com.felipe.algafood.api.v2.dto.model.CidadeModelV2;
 import com.felipe.algafood.core.springfox.model.CidadesModelOpenApi;
+import com.felipe.algafood.core.springfox.model.CidadesModelV2OpenApi;
 import com.felipe.algafood.core.springfox.model.CozinhasModelOpenApi;
 import com.felipe.algafood.core.springfox.model.EstadosModelOpenApi;
 import com.felipe.algafood.core.springfox.model.FormasPagamentosModelOpenApi;
@@ -70,13 +72,15 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	private final ModelRef modelRef = new ModelRef("Problema");
 	
 	private TypeResolver typeResolver = new TypeResolver();
+	
 	@Bean
-	public Docket apiDocket() {
+	public Docket apiDocketV1() {
 		
 		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("v1")
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.felipe.algafood.api"))
-				.paths(PathSelectors.any())
+				.paths(PathSelectors.ant("/v1/**"))
 					.build()
 				.useDefaultResponseMessages(false)
 				.globalResponseMessage(RequestMethod.GET, this.globalGetResponseMethos() )
@@ -116,7 +120,7 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 						typeResolver.resolve(CollectionModel.class, UsuarioModel.class), UsuariosModelOpenApi.class))
 				.alternateTypeRules(AlternateTypeRules.newRule(
 						typeResolver.resolve(CollectionModel.class, GrupoModel.class), GruposModelOpenApi.class))
-				.apiInfo(apiInfo()) 
+				.apiInfo(apiInfoV1()) 
 				.tags(new Tag("Cidades", "Gerencia a cidade"),
 						new Tag("Grupos", "Gerencia de grupos"),
 						new Tag("Cozinhas", "Gerencia de cozinhas"),
@@ -131,8 +135,49 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 						new Tag("Root", "Lista os links da api"));
 	}
 	
-	public ApiInfo apiInfo() {
+	@Bean
+	public Docket apiDocketV2() {
+		
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("v2")
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("com.felipe.algafood.api"))
+				.paths(PathSelectors.ant("/v2/**"))
+					.build()
+				.useDefaultResponseMessages(false)
+				.globalResponseMessage(RequestMethod.GET, this.globalGetResponseMethos() )
+				.globalResponseMessage(RequestMethod.POST, this.globalPostResponseMethos())
+				.globalResponseMessage(RequestMethod.PUT, this.globalPutResponseMethos())
+				.globalResponseMessage(RequestMethod.DELETE, this.globalDeleteResponseMethos())
+				/*
+				 * Para fins de estudo
+				 * .globalOperationParameters(Arrays.asList(
+						new ParameterBuilder().name("campos")
+						.description("Nomes das propriedas para filtrar na resposta separados por virgula")
+						.parameterType("query")
+						.modelRef(new ModelRef("String")).build()
+						))*/ 
+				.additionalModels(typeResolver.resolve(Problem.class))
+				.ignoredParameterTypes(ServletWebRequest.class, URI.class, URL.class,URLStreamHandler.class, Resource.class, File.class,
+						InputStream.class)
+				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+				.directModelSubstitute(Links.class,LinksModelOpenApi.class)
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, CidadeModelV2.class), CidadesModelV2OpenApi.class))
+				.apiInfo(apiInfoV2()) 
+				.tags(new Tag("Cidades", "Gerencia a cidade")
+						);
+	}
+	
+	private ApiInfo apiInfoV1() {
 		return new ApiInfoBuilder().title("AlgaFood Api").version("v1")
+				.description("Api aberta apara clientes e restaurantes")
+				.contact(new Contact("Felipe Souza", "felipedb91@hotmail.com", "felipedb91@hotmail.com"))
+				.build();
+	}
+	
+	private ApiInfo apiInfoV2() {
+		return new ApiInfoBuilder().title("AlgaFood Api").version("v2")
 				.description("Api aberta apara clientes e restaurantes")
 				.contact(new Contact("Felipe Souza", "felipedb91@hotmail.com", "felipedb91@hotmail.com"))
 				.build();

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.hateoas.Links;
 
-import com.felipe.algafood.api.dto.model.FormaPagamentoModel;
+import com.felipe.algafood.api.v1.dto.model.FormaPagamentoModel;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
