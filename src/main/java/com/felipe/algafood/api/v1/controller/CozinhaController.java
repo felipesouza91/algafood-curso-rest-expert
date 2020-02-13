@@ -60,7 +60,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public CozinhaModel buscarPorId(@PathVariable Long id) {
+	public CozinhaModel buscarPorId(@PathVariable Long id) { 
 		this.cozinhaService.buscarPorId(id);
 		return cozinhaDtoManager.toModel(this.cozinhaService.buscarPorId(id));
 	}
