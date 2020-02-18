@@ -24,6 +24,7 @@
 		<springfox.version>2.9.2</springfox.version>
 		<springfox.version.components>1.5.21</springfox.version.components>
 		<logback-ext.loggly.version>0.1.5</logback-ext.loggly.version>
+		<oauth2-oidc-sdk.version>6.21.2</oauth2-oidc-sdk.version>
 	</properties>
 
 	<dependencies>
@@ -118,7 +119,7 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${springfox.version}</version>
-			
+
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.plugin</groupId>
@@ -166,9 +167,9 @@
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.logback-extensions</groupId>
-		    <artifactId>logback-ext-loggly</artifactId>
-		    <version>${logback-ext.loggly.version}</version>
+			<groupId>org.logback-extensions</groupId>
+			<artifactId>logback-ext-loggly</artifactId>
+			<version>${logback-ext.loggly.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -179,6 +180,19 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>
+				spring-boot-starter-oauth2-resource-server
+			</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>oauth2-oidc-sdk</artifactId>
+			<version>${oauth2-oidc-sdk.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
