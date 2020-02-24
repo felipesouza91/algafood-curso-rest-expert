@@ -17,6 +17,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.docs.RestauranteFormaPagamentoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.FormaPagamentoDtoManager;
 import com.felipe.algafood.api.v1.dto.model.FormaPagamentoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Restaurante;
 import com.felipe.algafood.domain.service.RestauranteService;
 
@@ -35,6 +36,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Restaurante.PodeBuscar
 	public CollectionModel<FormaPagamentoModel> listarTodos(@PathVariable Long id) {
 		Restaurante restaurante = restauranteService.buscarPorId(id);
 		CollectionModel<FormaPagamentoModel> collection = formaPagamentoDtoManager.toCollectionModel(restaurante.getFormasPagamentos())
@@ -49,6 +51,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 	
 	@PutMapping("/{idFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public ResponseEntity<Void> associar(@PathVariable Long id, @PathVariable Long idFormaPagamento) {
 		this.restauranteService.associarFormaPagamento(id, idFormaPagamento);
 		return ResponseEntity.noContent().build();
@@ -56,6 +59,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 	
 	@DeleteMapping("/{idFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public ResponseEntity<Void> desassociar(@PathVariable Long id, @PathVariable Long idFormaPagamento) {
 		this.restauranteService.desassociarFormaPagamento(id, idFormaPagamento);
 		return ResponseEntity.noContent().build();

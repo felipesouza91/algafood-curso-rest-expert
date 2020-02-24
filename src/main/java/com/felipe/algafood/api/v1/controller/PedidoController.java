@@ -23,6 +23,7 @@ import com.felipe.algafood.api.v1.dto.converters.PedidoResumoDtoManager;
 import com.felipe.algafood.api.v1.dto.inputs.PedidoInput;
 import com.felipe.algafood.api.v1.dto.model.PedidoModel;
 import com.felipe.algafood.api.v1.dto.model.resumo.PedidoResumoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.filter.PedidoFilter;
 import com.felipe.algafood.domain.model.Pedido;
 import com.felipe.algafood.domain.service.PedidoService;
@@ -45,6 +46,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Pedido.PodePesquisar
 	public PagedModel<PedidoResumoModel> listarTodos( PedidoFilter filter, Pageable pageable) {
 		Page<Pedido> page = this.pedidoService.buscarTodos(filter, pageable);
 		PagedModel<PedidoResumoModel> pedidoResumoPaged = pagedResourceAssembled.toModel(page, resumoDtoManager); 
@@ -54,12 +56,14 @@ public class PedidoController implements PedidoControllerOpenApi {
 	
 	@GetMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Pedido.PodeBuscar
 	public PedidoModel listarPorId(@PathVariable String codigo) {
 		return dtoManager.toModel(this.pedidoService.buscarPorCodigo(codigo));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@CheckSecurity.Pedido.PodeCriar
 	public PedidoModel salvar(@RequestBody @Valid PedidoInput pedidoInput) {
 		Pedido pedido = dtoManager.converterToDomainObject(pedidoInput);
 		return this.dtoManager.toModel(this.pedidoService.salvar(pedido));

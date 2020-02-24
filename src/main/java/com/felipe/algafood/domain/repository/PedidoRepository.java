@@ -16,5 +16,6 @@ public interface PedidoRepository extends CustomJpaRepository<Pedido, Long>, Jpa
 	public List<Pedido> findAll();
 	
 	public Optional<Pedido> findByCodigo(String codigo);
-
+	
+	public boolean gerenciarPedido(String codigoPedido, Long codigoReponsavel);
 }

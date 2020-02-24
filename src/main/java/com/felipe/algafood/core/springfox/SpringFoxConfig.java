@@ -51,16 +51,23 @@ import com.felipe.algafood.core.springfox.model.UsuariosModelOpenApi;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.OAuthBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.GrantType;
+import springfox.documentation.service.ResourceOwnerPasswordCredentialsGrant;
 import springfox.documentation.service.ResponseMessage;
+import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -120,6 +127,8 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 						typeResolver.resolve(CollectionModel.class, UsuarioModel.class), UsuariosModelOpenApi.class))
 				.alternateTypeRules(AlternateTypeRules.newRule(
 						typeResolver.resolve(CollectionModel.class, GrupoModel.class), GruposModelOpenApi.class))
+				.securitySchemes(Arrays.asList(securityScheme()))
+				.securityContexts(Arrays.asList(securityContext()))
 				.apiInfo(apiInfoV1()) 
 				.tags(new Tag("Cidades", "Gerencia a cidade"),
 						new Tag("Grupos", "Gerencia de grupos"),
@@ -181,6 +190,28 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 				.description("Api aberta apara clientes e restaurantes")
 				.contact(new Contact("Felipe Souza", "felipedb91@hotmail.com", "felipedb91@hotmail.com"))
 				.build();
+	}
+	
+	private SecurityScheme securityScheme() {
+		return new OAuthBuilder().name("Algafood")
+					.grantTypes(grantTypes())
+					.scopes(scopes())
+					.build();
+	}
+	
+	private SecurityContext securityContext() {
+		var securityReference = SecurityReference.builder()
+				.reference("Algafood").scopes(scopes().toArray(new AuthorizationScope[0])).build();
+		
+		return SecurityContext.builder().securityReferences(Arrays.asList(securityReference)).forPaths(PathSelectors.any()).build();
+	}
+
+	private List<AuthorizationScope> scopes() {
+		return 	Arrays.asList(new AuthorizationScope("READ", "Acesso leitura"), new AuthorizationScope("WRITE", "Acesso escrita"));
+	}
+
+	private List<GrantType> grantTypes() {
+		return Arrays.asList(new ResourceOwnerPasswordCredentialsGrant("/oauth/token"));
 	}
 
 	@Override

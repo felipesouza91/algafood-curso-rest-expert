@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.controller.RestauranteProdutoFotoController;
 import com.felipe.algafood.api.v1.dto.model.FotoProdutoModel;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.model.FotoProduto;
 
 @Component
@@ -18,6 +19,9 @@ public class FotoProdutoDtoManager extends RepresentationModelAssemblerSupport<F
 	
 	@Autowired
 	private AlgaLinks algaLinks;
+	
+	@Autowired
+	private AlgaSecurity security;
 
 	public FotoProdutoDtoManager() {
 		super(RestauranteProdutoFotoController.class, FotoProdutoModel.class);
@@ -26,8 +30,12 @@ public class FotoProdutoDtoManager extends RepresentationModelAssemblerSupport<F
 	@Override
 	public FotoProdutoModel toModel(FotoProduto entity) {
 		FotoProdutoModel model = modelMapper.map(entity, FotoProdutoModel.class);
-		model.add(algaLinks.linkToProdutoFoto(entity.getRestauranteId(), entity.getId()));
-		model.add(algaLinks.linkToProduto(entity.getRestauranteId(), entity.getId(), "produto"));
+		if(security.podeConsultarRestaurante()) {
+			model.add(algaLinks.linkToProdutoFoto(entity.getRestauranteId(), entity.getId()));
+			model.add(algaLinks.linkToProduto(entity.getRestauranteId(), entity.getId(), "produto"));
+		}
+		
+		
 		return model;
 	}
 }

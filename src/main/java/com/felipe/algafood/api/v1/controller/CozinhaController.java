@@ -24,6 +24,7 @@ import com.felipe.algafood.api.v1.docs.CozinhaControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.CozinhaDtoManager;
 import com.felipe.algafood.api.v1.dto.inputs.CozinhaInput;
 import com.felipe.algafood.api.v1.dto.model.CozinhaModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Cozinha;
 import com.felipe.algafood.domain.repository.CozinhaRepository;
 import com.felipe.algafood.domain.service.CozinhaService;
@@ -49,6 +50,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Cozinha.PodeBuscar
 	public PagedModel<CozinhaModel> listar(Pageable pageable) {
 		log.info("Consultando cozinhas....");
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
@@ -58,6 +60,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		return cozinhasPagedModel;
 	}
 	
+	@CheckSecurity.Cozinha.PodeBuscar
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public CozinhaModel buscarPorId(@PathVariable Long id) { 
@@ -65,6 +68,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		return cozinhaDtoManager.toModel(this.cozinhaService.buscarPorId(id));
 	}
 	
+	@CheckSecurity.Cozinha.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaModel savar (@RequestBody @Valid CozinhaInput cozinhaInput) {
@@ -72,6 +76,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 		return cozinhaDtoManager.toModel(cozinhaService.salvar(cozinha));
 	}
 	
+	@CheckSecurity.Cozinha.PodeEditar
 	@PutMapping("/{id}")
 	public ResponseEntity<CozinhaModel> atualizar(@PathVariable Long id, @RequestBody @Valid CozinhaInput cozinhaInput) {
 		Cozinha cozinhaAtual = this.cozinhaService.buscarPorId(id);
@@ -80,6 +85,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	}
 	
 	@DeleteMapping("/{id}")
+	@CheckSecurity.Cozinha.PodeEditar
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id) {
 		this.cozinhaService.excluir(id);

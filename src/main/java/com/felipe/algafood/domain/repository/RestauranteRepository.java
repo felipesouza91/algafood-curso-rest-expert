@@ -15,4 +15,6 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	
 	@Query("from Restaurante r join r.cozinha")
 	List<Restaurante> findAll();
+	
+	boolean existsResponsavel(Long restauranteId, Long usuarioId);	
 }

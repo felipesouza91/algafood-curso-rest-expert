@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.felipe.algafood.api.v1.docs.FluxoPedidoControllerOpenApi;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.service.PedidoService;
 
 @RestController
@@ -22,6 +23,7 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
 	@PutMapping("/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Pedido.PodeGerenciarPedidos
 	public ResponseEntity<Void> confirmar(@PathVariable String codigo) {
 		pedidoService.confirmar(codigo);
 		return ResponseEntity.noContent().build();
@@ -29,6 +31,7 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
 	@PutMapping("/entregar")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Pedido.PodeGerenciarPedidos
 	public ResponseEntity<Void> entregar(@PathVariable String codigo) {
 		pedidoService.entregar(codigo);
 		return ResponseEntity.noContent().build();
@@ -36,6 +39,7 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
 	@PutMapping("/cancelar")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Pedido.PodeGerenciarPedidos
 	public ResponseEntity<Void> cancelar(@PathVariable String codigo) {
 		pedidoService.cancelar(codigo);
 		return ResponseEntity.noContent().build();

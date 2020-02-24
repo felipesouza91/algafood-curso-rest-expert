@@ -21,6 +21,7 @@ import com.felipe.algafood.api.v1.docs.CidadeControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.CidadeDtoManager;
 import com.felipe.algafood.api.v1.dto.inputs.CidadeInput;
 import com.felipe.algafood.api.v1.dto.model.CidadeModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.service.CidadeService;
 
@@ -38,14 +39,15 @@ public class CidadeController implements CidadeControllerOpenApi{
 	@Deprecated
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Cidade.PodeConsultar
 	public CollectionModel<CidadeModel> buscar() {
-		
 		//collection.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
 		return cidadeDtoManager.toCollectionModel(this.cidadeService.getCidadeRepository().findAll());
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Cidade.PodeConsultar
 	public CidadeModel buscarPorId(@PathVariable Long id) {
 		CidadeModel cidadeModel = cidadeDtoManager.toModel(this.cidadeService.buscarPorId(id)) ;
 		return cidadeModel;
@@ -53,6 +55,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@CheckSecurity.Cidade.PodeEditar
 	public CidadeModel salvar (@RequestBody @Valid CidadeInput cidadeInput) {
 		Cidade cidade = this.cidadeDtoManager.converterToDomainObject(cidadeInput);
 		cidade = this.cidadeService.salvar(cidade);
@@ -62,6 +65,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 	
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Cidade.PodeEditar
 	public CidadeModel atualizar(@PathVariable Long id, @RequestBody @Valid  CidadeInput cidadeInput) {
 		Cidade cidade = cidadeService.atualizar(id, this.cidadeDtoManager.converterToDomainObject(cidadeInput));
 		return this.cidadeDtoManager.toModel(cidade);
@@ -69,6 +73,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Cidade.PodeEditar
 	public void excluir( @PathVariable Long id) {
 		cidadeService.excluir(id);
 	}

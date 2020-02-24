@@ -10,6 +10,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.controller.PedidoController;
 import com.felipe.algafood.api.v1.dto.inputs.PedidoInput;
 import com.felipe.algafood.api.v1.dto.model.PedidoModel;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.model.Pedido;
 
 @Component
@@ -21,6 +22,9 @@ public class PedidoDtoManager extends RepresentationModelAssemblerSupport<Pedido
 	
 	@Autowired
 	private AlgaLinks algaLinks;
+	
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	public PedidoDtoManager() {
 		super(PedidoController.class, PedidoModel.class);
@@ -32,16 +36,21 @@ public class PedidoDtoManager extends RepresentationModelAssemblerSupport<Pedido
 	public PedidoModel toModel(Pedido pedido) {
 		PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
 		modelMapper.map(pedido, pedidoModel);
-		if(pedido.podeSerConfirmado() ) {
-			pedidoModel.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+		if(algaSecurity.podeGerenciarPedidos(pedido.getCodigo())) {
+			if(pedido.podeSerConfirmado() ) {
+				pedidoModel.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+			}
+			if(pedido.podeSerEntregue()) {
+				pedidoModel.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+			}
+			if( pedido.podeSerCancelado() ) {
+				pedidoModel.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));	
+			}
 		}
-		if(pedido.podeSerEntregue()) {
-			pedidoModel.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+		if (algaSecurity.podeConsultarPedido(pedido.getRestaurante().getId(), pedido.getCliente().getId())) {
+			pedidoModel.add(algaLinks.linkToPedidos("pedidos"));
 		}
-		if( pedido.podeSerCancelado() ) {
-			pedidoModel.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));	
-		}
-		pedidoModel.add(algaLinks.linkToPedidos("pedidos"));
+		
 		pedidoModel.getEnderecoEntrega().getCidade().add(algaLinks.linkToCidade(pedidoModel.getEnderecoEntrega().getCidade().getId()));
 		pedidoModel.getFormaPagamento().add(algaLinks.linkToFormaPagamento(pedidoModel.getFormaPagamento().getId()));
 		pedidoModel.getRestaurante().add(algaLinks.linkToRestaurante(pedidoModel.getRestaurante().getId()));

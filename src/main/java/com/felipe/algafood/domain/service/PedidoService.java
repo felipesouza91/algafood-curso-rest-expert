@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.felipe.algafood.core.data.PageWrapper;
 import com.felipe.algafood.core.data.PageableTranslator;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.exception.EntidadeEmUsoException;
 import com.felipe.algafood.domain.exception.NegocioException;
 import com.felipe.algafood.domain.exception.PedidoNaoEncontradaException;
@@ -43,9 +44,10 @@ public class PedidoService {
 	
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+
 	
 	@Autowired
-	private UsuarioService usuarioService;
+	private AlgaSecurity algaSecurity;
 
 	@Transactional
 	public Page<Pedido> buscarTodos(PedidoFilter filter, Pageable pageable) {
@@ -106,12 +108,13 @@ public class PedidoService {
 		Cidade cidade = this.cidadeService.buscarPorId(pedido.getEnderecoEntrega().getCidade().getId());
 		Restaurante restaurante = this.restauranteService.buscarPorId(pedido.getRestaurante().getId());
 		FormaPagamento formaPagamento = this.formaPagamentoService.buscarById(pedido.getFormaPagamento().getId());
-		Usuario cliente = this.usuarioService.buscarPorId(1L);
 		
 		pedido.getEnderecoEntrega().setCidade(cidade);
 		pedido.setRestaurante(restaurante);
 		pedido.setFormaPagamento(formaPagamento);
-		pedido.setCliente(cliente);
+		pedido.setCliente(new Usuario());
+		pedido.getCliente().setId(algaSecurity.getUsuarioId());
+		
 		
 		if(restaurante.naoAceitaFormaPagamento(formaPagamento)) {
 			throw new NegocioException(String.format("Forma de pagamento '%s' não é aceita por esse restaurante.",

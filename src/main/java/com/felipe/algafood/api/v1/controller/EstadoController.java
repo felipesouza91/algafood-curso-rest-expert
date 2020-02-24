@@ -21,6 +21,7 @@ import com.felipe.algafood.api.v1.docs.EstadoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.EstadoDtoManager;
 import com.felipe.algafood.api.v1.dto.inputs.EstadoInput;
 import com.felipe.algafood.api.v1.dto.model.EstadoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Estado;
 import com.felipe.algafood.domain.service.EstadoService;
 
@@ -36,23 +37,27 @@ public class EstadoController implements EstadoControllerOpenApi{
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Estado.PodeConsultar
 	public CollectionModel<EstadoModel> buscar() {
 		return dtoManager.toCollectionModel(this.estadoService.getEstadoRepository().findAll());
 	}
 	
 	@GetMapping("/{id}")
+	@CheckSecurity.Estado.PodeConsultar
 	public EstadoModel buscarPorId(@PathVariable Long id) {
 		return dtoManager.toModel(this.estadoService.buscarPorId(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@CheckSecurity.Estado.PodeEditar
 	public EstadoModel salvar (@RequestBody @Valid EstadoInput estadoInput) {
 		return dtoManager.toModel(this.estadoService.salvar(this.dtoManager.converterToDomainObject(estadoInput)));
 				
 	}
 	
 	@PutMapping("/{id}")
+	@CheckSecurity.Estado.PodeEditar
 	public ResponseEntity<EstadoModel> atualizar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput) {
 		Estado estado = estadoService.buscarPorId(id);
 		dtoManager.copyToDomainObject(estadoInput, estado);
@@ -61,6 +66,7 @@ public class EstadoController implements EstadoControllerOpenApi{
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Estado.PodeEditar
 	public void excluir(@PathVariable Long id) {
 		estadoService.excluir(id);
 	}

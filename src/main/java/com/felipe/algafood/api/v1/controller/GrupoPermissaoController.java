@@ -17,6 +17,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.docs.GrupoPermissaoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.PermissaoDtoManager;
 import com.felipe.algafood.api.v1.dto.model.PermissaoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Grupo;
 import com.felipe.algafood.domain.service.GrupoService;
 
@@ -35,6 +36,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.UsuarioGrupoPermissoes.PodeConsultar
 	public CollectionModel<PermissaoModel> listarTodos(@PathVariable Long id) {
 		Grupo grupo = this.grupoService.buscarPorId(id);
 		CollectionModel<PermissaoModel> collectionModel = this.dtoManager.toCollectionModel(grupo.getPermissoes()).removeLinks(); 
@@ -45,6 +47,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 	
 	@PutMapping("/{idPermissao}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.UsuarioGrupoPermissoes.PodeEditar
 	public ResponseEntity<Void> associar(@PathVariable Long id, @PathVariable Long idPermissao) {
 		this.grupoService.associarPermissao(id, idPermissao);
 		return ResponseEntity.noContent().build(); 
@@ -52,6 +55,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 	
 	@DeleteMapping("/{idPermissao}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.UsuarioGrupoPermissoes.PodeEditar
 	public ResponseEntity<Void>  desassociar(@PathVariable Long id, @PathVariable Long idPermissao) {
 		this.grupoService.desassociarPermissao(id, idPermissao);
 		return ResponseEntity.noContent().build();

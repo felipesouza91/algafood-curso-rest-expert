@@ -27,6 +27,7 @@ import com.felipe.algafood.api.v1.docs.FormaPagamentoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.FormaPagamentoDtoManager;
 import com.felipe.algafood.api.v1.dto.inputs.FormaPagamentoInput;
 import com.felipe.algafood.api.v1.dto.model.FormaPagamentoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.FormaPagamento;
 import com.felipe.algafood.domain.service.FormaPagamentoService;
 
@@ -41,6 +42,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	private FormaPagamentoDtoManager dtoManager;
 
 	@GetMapping
+	@CheckSecurity.FormaPagamento.PodeConsultar
 	public ResponseEntity<CollectionModel<FormaPagamentoModel>> listarTodos(ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		String etag = "0" ;
@@ -59,6 +61,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	}
 	
 	@GetMapping("/{id}")
+	@CheckSecurity.FormaPagamento.PodeConsultar
 	public ResponseEntity<FormaPagamentoModel> buscarPorId(@PathVariable Long id, ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		String etag = "0" ;
@@ -76,6 +79,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@CheckSecurity.FormaPagamento.PodeEditar
 	public FormaPagamentoModel criar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 		FormaPagamento formaPagamento = this.dtoManager.converterToDomainObject(formaPagamentoInput);
 		return this.dtoManager.toModel(this.formaPagamentoService.salvar(formaPagamento));
@@ -83,6 +87,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.FormaPagamento.PodeEditar
 	public FormaPagamentoModel atualizar(@PathVariable Long id, @RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 		FormaPagamento formaPagamento = this.formaPagamentoService.buscarById(id);
 		dtoManager.copyToDomainObject(formaPagamentoInput, formaPagamento );
@@ -91,6 +96,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.FormaPagamento.PodeEditar
 	public void remover(@PathVariable Long id) {
 		this.formaPagamentoService.excluir(id);
 	}	

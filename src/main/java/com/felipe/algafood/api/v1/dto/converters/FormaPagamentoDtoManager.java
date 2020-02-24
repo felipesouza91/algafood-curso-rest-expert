@@ -10,6 +10,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.controller.FormaPagamentoController;
 import com.felipe.algafood.api.v1.dto.inputs.FormaPagamentoInput;
 import com.felipe.algafood.api.v1.dto.model.FormaPagamentoModel;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.model.FormaPagamento;
 
 @Component
@@ -21,6 +22,8 @@ public class FormaPagamentoDtoManager extends RepresentationModelAssemblerSuppor
 	@Autowired
 	private AlgaLinks algaLinks;
 	
+	private AlgaSecurity security;
+	
 	public FormaPagamentoDtoManager() {
 		super(FormaPagamentoController.class, FormaPagamentoModel.class);
 	}
@@ -29,7 +32,9 @@ public class FormaPagamentoDtoManager extends RepresentationModelAssemblerSuppor
 	public FormaPagamentoModel toModel(FormaPagamento entity) {
 		FormaPagamentoModel model = createModelWithId(entity.getId(), entity);
 		modelMapper.map(entity, model);
-		model.add(algaLinks.linkToFormasPagamentos("formas-pagamentos"));
+		if(security.podeConsultarFormaPagamento()) {
+			model.add(algaLinks.linkToFormasPagamentos("formas-pagamentos"));
+		}
 		return model;
 	}
 	

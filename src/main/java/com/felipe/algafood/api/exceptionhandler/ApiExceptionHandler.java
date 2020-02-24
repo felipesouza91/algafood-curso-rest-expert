@@ -2,6 +2,7 @@ package com.felipe.algafood.api.exceptionhandler;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -95,6 +97,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 	
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		Problem problem = this.createProblemBuilder(status, ProblemType.ACESSO_NEGADO,
+				ex.getMessage(), messageSource.getMessage("acesso-negado", null,Locale.getDefault())).build();
+		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+
+	
 	@Override
 	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -144,7 +156,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		Problem problem = this.createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, detail, MSG_ERRO_GENERICO_USUARIO_FINAL).build();
 		return handleExceptionInternal(ex, problem ,headers, status, request);
 	}
-
+	
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {

@@ -17,6 +17,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.docs.RestauranteUsuarioControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.UsuarioDtoManager;
 import com.felipe.algafood.api.v1.dto.model.UsuarioModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Restaurante;
 import com.felipe.algafood.domain.service.RestauranteService;
 
@@ -35,6 +36,7 @@ public class RestauranteUsuarioController implements RestauranteUsuarioControlle
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Restaurante.PodeBuscar
 	public CollectionModel<UsuarioModel> listarTodosUsuarios(@PathVariable Long id) {
 		Restaurante restaurante = this.restauranteService.buscarPorId(id);
 		CollectionModel<UsuarioModel> collection = this.dtoManager.toCollectionModel(restaurante.getResponsaveis()).removeLinks()
@@ -47,6 +49,7 @@ public class RestauranteUsuarioController implements RestauranteUsuarioControlle
 	
 	@PutMapping("/{idResponsavel}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public ResponseEntity<Void> associarResponsavel(@PathVariable Long id, @PathVariable Long idResponsavel) {
 		this.restauranteService.associarResponavel(id, idResponsavel);
 		return ResponseEntity.noContent().build();
@@ -54,6 +57,7 @@ public class RestauranteUsuarioController implements RestauranteUsuarioControlle
 	
 	@DeleteMapping("/{idResponsavel}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public ResponseEntity<Void> desassociarResponsavel(@PathVariable Long id, @PathVariable Long idResponsavel) {
 		this.restauranteService.desassociarResponavel(id, idResponsavel);
 		return ResponseEntity.noContent().build();

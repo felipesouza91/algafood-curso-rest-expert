@@ -12,6 +12,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.controller.EstadoController;
 import com.felipe.algafood.api.v1.dto.inputs.EstadoInput;
 import com.felipe.algafood.api.v1.dto.model.EstadoModel;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.model.Estado;
 
 @Component
@@ -23,6 +24,9 @@ public class EstadoDtoManager extends RepresentationModelAssemblerSupport<Estado
 	@Autowired
 	private AlgaLinks algaLinks;
 	
+	@Autowired
+	private AlgaSecurity security;
+	
 	public EstadoDtoManager() {
 		super(EstadoController.class, EstadoModel.class);
 	}
@@ -31,7 +35,9 @@ public class EstadoDtoManager extends RepresentationModelAssemblerSupport<Estado
 	public EstadoModel toModel(Estado estado) {
 		EstadoModel estadoModel = createModelWithId(estado.getId(), estado);
 		modelMapper.map(estado, estadoModel);
-		estadoModel.add(algaLinks.linkToEstados("estados"));
+		if(security.podeConsultarEstado()) {
+			estadoModel.add(algaLinks.linkToEstados("estados"));
+		}
 		return estadoModel;
 	}
 

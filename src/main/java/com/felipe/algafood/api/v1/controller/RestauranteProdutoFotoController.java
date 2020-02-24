@@ -27,6 +27,7 @@ import com.felipe.algafood.api.v1.docs.RestauranteFotoProdutoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.FotoProdutoDtoManager;
 import com.felipe.algafood.api.v1.dto.inputs.FotoProdutoInput;
 import com.felipe.algafood.api.v1.dto.model.FotoProdutoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.felipe.algafood.domain.model.FotoProduto;
 import com.felipe.algafood.domain.service.FotoStorageService;
@@ -52,11 +53,13 @@ public class RestauranteProdutoFotoController implements RestauranteFotoProdutoC
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Restaurante.PodeBuscar
 	public FotoProdutoModel buscarFoto(@PathVariable Long restId,@PathVariable Long prodId) {
 		return dtoManager.toModel(fotoService.buscarFotoProtudo(restId, prodId));
 	}
 	
 	@GetMapping(produces = MediaType.ALL_VALUE)
+	@CheckSecurity.Restaurante.PodeBuscar
 	public ResponseEntity<?> servirFoto(@PathVariable Long restId,@PathVariable Long prodId,
 		 	@RequestHeader(name="accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
 		try {
@@ -80,6 +83,7 @@ public class RestauranteProdutoFotoController implements RestauranteFotoProdutoC
 	} 
 
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public FotoProdutoModel atualizaFoto(@PathVariable Long restId, @PathVariable Long prodId,@Valid FotoProdutoInput produtoInput, 
 			@RequestPart(required = true)MultipartFile arquivo) throws IOException {
 			var prod = produtoService.buscarPorIdRestauranteEProduto(restId, prodId);
@@ -95,6 +99,7 @@ public class RestauranteProdutoFotoController implements RestauranteFotoProdutoC
 	
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public void deletar(@PathVariable Long restId, @PathVariable Long prodId) {
 		FotoProduto fotoProduto= fotoService.buscarFotoProtudo(restId, prodId);
 		this.fotoService.excluir(fotoProduto);

@@ -11,6 +11,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.controller.CidadeController;
 import com.felipe.algafood.api.v1.dto.inputs.CidadeInput;
 import com.felipe.algafood.api.v1.dto.model.CidadeModel;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.model.Cidade;
 import com.felipe.algafood.domain.model.Estado;
 
@@ -23,6 +24,9 @@ public class CidadeDtoManager extends RepresentationModelAssemblerSupport<Cidade
 	@Autowired
 	private AlgaLinks algaLinks;
 	
+	@Autowired
+	private AlgaSecurity algaSecurity;
+	
 	public CidadeDtoManager() {
 		super(CidadeController.class, CidadeModel.class);
 	}
@@ -31,10 +35,13 @@ public class CidadeDtoManager extends RepresentationModelAssemblerSupport<Cidade
 	public CidadeModel toModel(Cidade cidade) {
 		CidadeModel cidadeModel = createModelWithId(cidade.getId(), cidade);
 		modelMapper.map(cidade, cidadeModel);
-		cidadeModel.add(algaLinks.LinkToCidades("cidades"));
 		
-		cidadeModel.getEstado().add(algaLinks.linkToEstado(cidadeModel.getEstado().getId()));
-		
+		if(algaSecurity.podeConsultarCidade()) {
+			cidadeModel.add(algaLinks.LinkToCidades("cidades"));
+		}
+		if( algaSecurity.podeConsultarEstado()) {
+			cidadeModel.getEstado().add(algaLinks.linkToEstado(cidadeModel.getEstado().getId()));
+		}
 		return cidadeModel;
 	}
 	

@@ -17,6 +17,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.docs.UsuarioGrupoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.GrupoDtoManager;
 import com.felipe.algafood.api.v1.dto.model.GrupoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Usuario;
 import com.felipe.algafood.domain.service.UsuarioService;
 
@@ -35,6 +36,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.UsuarioGrupoPermissoes.PodeConsultar
 	public CollectionModel<GrupoModel> listarTodos(@PathVariable Long id) {
 		Usuario usuario = this.usuarioService.buscarPorId(id);
 		CollectionModel<GrupoModel> collectionModel = this.dtoManager.toCollectionModel(usuario.getGrupos())
@@ -45,6 +47,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	
 	@PutMapping("/{idGrupo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.UsuarioGrupoPermissoes.PodeEditar
 	public ResponseEntity<Void> associarGrupo(@PathVariable Long id, @PathVariable Long idGrupo) {
 		this.usuarioService.associarGrupo(id, idGrupo);
 		return ResponseEntity.noContent().build();
@@ -52,6 +55,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	
 	@DeleteMapping("/{idGrupo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@CheckSecurity.UsuarioGrupoPermissoes.PodeEditar
 	public ResponseEntity<Void> desassociarGrupo(@PathVariable Long id, @PathVariable Long idGrupo) {
 		this.usuarioService.desassociarGrupo(id, idGrupo);
 		return ResponseEntity.noContent().build();

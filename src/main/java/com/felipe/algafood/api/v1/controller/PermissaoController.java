@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.felipe.algafood.api.v1.docs.PermissaoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.PermissaoDtoManager;
 import com.felipe.algafood.api.v1.dto.model.PermissaoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.repository.PermissaoRepository;
 
 @RestController
@@ -27,6 +28,7 @@ public class PermissaoController implements PermissaoControllerOpenApi {
 	@Override
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.UsuarioGrupoPermissoes.PodeConsultar
 	public CollectionModel<PermissaoModel> listarTodas() {
 		return dtoManager.toCollectionModel(permissaoRepository.findAll());
 	}

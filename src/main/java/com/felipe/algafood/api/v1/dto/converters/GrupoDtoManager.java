@@ -10,6 +10,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.controller.GrupoController;
 import com.felipe.algafood.api.v1.dto.inputs.GrupoInput;
 import com.felipe.algafood.api.v1.dto.model.GrupoModel;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.model.Grupo;
 
 @Component
@@ -21,6 +22,9 @@ public class GrupoDtoManager extends RepresentationModelAssemblerSupport<Grupo, 
 	@Autowired
 	private AlgaLinks algaLinks;
 	
+	@Autowired
+	private AlgaSecurity security;
+	
 	public GrupoDtoManager() {
 		super(GrupoController.class, GrupoModel.class);
 		// TODO Auto-generated constructor stub
@@ -30,8 +34,11 @@ public class GrupoDtoManager extends RepresentationModelAssemblerSupport<Grupo, 
 	public GrupoModel toModel(Grupo grupo) {
 		GrupoModel model = createModelWithId(grupo.getId(), grupo);
 		modelMapper.map(grupo, model);
-		model.add(algaLinks.linkToGrupos("grupos"));
-		model.add(algaLinks.linkToGrupoPermissoes(grupo.getId(),"permissoes"));
+		if ( security.podeConsultarUsuarioGrupoPermissao()) {
+			model.add(algaLinks.linkToGrupos("grupos"));
+			model.add(algaLinks.linkToGrupoPermissoes(grupo.getId(),"permissoes"));
+		}
+		
 		return model;
 	}
 	

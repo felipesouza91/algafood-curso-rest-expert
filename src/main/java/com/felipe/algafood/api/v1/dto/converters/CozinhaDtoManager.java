@@ -9,6 +9,7 @@ import com.felipe.algafood.api.v1.AlgaLinks;
 import com.felipe.algafood.api.v1.controller.CozinhaController;
 import com.felipe.algafood.api.v1.dto.inputs.CozinhaInput;
 import com.felipe.algafood.api.v1.dto.model.CozinhaModel;
+import com.felipe.algafood.core.security.AlgaSecurity;
 import com.felipe.algafood.domain.model.Cozinha;
 
 @Component
@@ -20,6 +21,9 @@ public class CozinhaDtoManager extends RepresentationModelAssemblerSupport<Cozin
 	@Autowired
 	private AlgaLinks algaLinks;
 	
+	@Autowired
+	private AlgaSecurity algaSecurity;
+	
 	public CozinhaDtoManager() {
 		super(CozinhaController.class, CozinhaModel.class);
 	}
@@ -28,6 +32,7 @@ public class CozinhaDtoManager extends RepresentationModelAssemblerSupport<Cozin
 	public CozinhaModel toModel(Cozinha object) {
 		CozinhaModel cozinhaModel = createModelWithId(object.getId(), object);
 		modelMapper.map(object, cozinhaModel);
+		if(algaSecurity.podeConsultarCozinha())
 		cozinhaModel.add(algaLinks.linkToCozinhas("cozinhas"));
 		return cozinhaModel;
 	}

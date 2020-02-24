@@ -21,6 +21,7 @@ import com.felipe.algafood.api.v1.docs.RestauranteProdutoControllerOpenApi;
 import com.felipe.algafood.api.v1.dto.converters.ProdutoDtoManager;
 import com.felipe.algafood.api.v1.dto.inputs.ProdutoInput;
 import com.felipe.algafood.api.v1.dto.model.ProdutoModel;
+import com.felipe.algafood.core.security.CheckSecurity;
 import com.felipe.algafood.domain.model.Produto;
 import com.felipe.algafood.domain.model.Restaurante;
 import com.felipe.algafood.domain.service.ProdutoService;
@@ -44,6 +45,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Restaurante.PodeBuscar
 	public CollectionModel<ProdutoModel> buscarTodos(@PathVariable Long idRestaurante,
 			@RequestParam(required = false, defaultValue = "false") Boolean incluirInativo) {
 		Restaurante restaurante = restauranteService.buscarPorId(idRestaurante);
@@ -58,6 +60,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	
 	@GetMapping("/{idProduto}")
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Restaurante.PodeBuscar
 	public ProdutoModel buscarPorId(@PathVariable Long idRestaurante, @PathVariable Long idProduto) {
 		restauranteService.buscarPorId(idRestaurante);
 		Produto produto = this.produtoService.buscarPorIdRestauranteEProduto(idRestaurante, idProduto);
@@ -66,6 +69,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public ProdutoModel salvar(@PathVariable Long idRestaurante, @RequestBody @Valid ProdutoInput produtoInput) {
 		Restaurante restaurante = this.restauranteService.buscarPorId(idRestaurante);
 		Produto produto = this.dtoManager.converterToDomainObject(produtoInput);
@@ -75,6 +79,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	
 	@PutMapping("/{idProduto}")
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Restaurante.PodeGerenciarCadastro
 	public ProdutoModel atualizar(@PathVariable Long idRestaurante, @PathVariable Long idProduto,
 			@RequestBody @Valid ProdutoInput produtoInput) {
 		this.restauranteService.buscarPorId(idRestaurante);
