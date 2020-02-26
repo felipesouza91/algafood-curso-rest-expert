@@ -151,7 +151,7 @@ public @interface CheckSecurity {
 
 		@Retention(RUNTIME)
 		@Target(METHOD)
-		@PreAuthorize("@algaSecutiry.podeConsultarUsuarioGrupoPermissao()")
+		@PreAuthorize("@algaSecurity.podeConsultarUsuarioGrupoPermissao()")
 		public @interface PodeConsultar {
 		}
 

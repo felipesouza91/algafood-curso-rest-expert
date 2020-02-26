@@ -1,7 +1,7 @@
 
 create table usuario (
 	id bigint not null auto_increment,
-	data_cadastro datetime(6),
+	data_cadastro datetime,
 	email varchar(255),
 	nome varchar(255),
 	senha varchar(255),
