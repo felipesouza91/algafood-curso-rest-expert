@@ -1,0 +1,29 @@
+version: "3.9"
+
+networks: 
+  algafood-network:
+    driver: bridge
+
+services: 
+  algafood-mysql:
+    image: mysql:8.0
+    environment: 
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    container_name: algafood_mysql
+    ports: 
+      - 3306:3306
+    networks: 
+      - algafood-network
+  app:
+    image: algafood-api
+    container_name: app_container
+    environment: 
+      DB_HOST: algafood-mysql
+      spring.datasource.username: "root"
+      spring.datasource.password: ""
+    ports: 
+      - 8080:8080
+    networks: 
+      - algafood-network
+    depends_on: 
+      - algafood-mysql

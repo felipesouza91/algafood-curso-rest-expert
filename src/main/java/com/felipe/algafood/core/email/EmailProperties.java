@@ -14,7 +14,7 @@ public class EmailProperties {
 
 	private String remetente;
 	
-	private TipoEmail impl;
+	private TipoEmail impl = TipoEmail.FAKE;
 	
 	private SandBox sandBox = new SandBox();	
 	
