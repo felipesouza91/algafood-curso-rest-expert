@@ -1,8 +1,15 @@
 package com.felipe.algafood.core.security.authorizationserver;
 
+import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
 import javax.sql.DataSource;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -64,7 +71,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			.accessTokenConverter(accessTokenConverter())
 			.tokenEnhancer(enhancerChain)
 			.approvalStore(approvalStore(endpoints.getTokenStore()))
-			.tokenGranter(tokenGranter(endpoints));;
+			.tokenGranter(tokenGranter(endpoints));
 	}
 	
 	private ApprovalStore approvalStore(TokenStore tokenStore) {
@@ -74,14 +81,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	}
 
 	@Bean
+	public JWKSet jwkSet() {
+		RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) getKeyPair().getPublic())
+				.keyUse(KeyUse.SIGNATURE)
+				.algorithm(JWSAlgorithm.RS256)
+				.keyID("algafood-key-id");
+		
+		return new JWKSet(builder.build());
+	}
+
+	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		var converter = new JwtAccessTokenConverter();
 		// Symetric key converter.setSigningKey("FelipeSSantanasadasdasdasdasdasdsadasdwdasdwdadasdasd");
-		
-		var keyStoreKeyFactore = new KeyStoreKeyFactory(jwtKeyStoreProperties.getJksLocation(), jwtKeyStoreProperties.getPassword().toCharArray());
-		var keyPair = keyStoreKeyFactore.getKeyPair(jwtKeyStoreProperties.getKeypairAlias());
-		converter.setKeyPair(keyPair);
+		converter.setKeyPair(getKeyPair());
 		return converter;
+	}
+
+	private KeyPair getKeyPair() {
+		var keyStoreKeyFactore = new KeyStoreKeyFactory(jwtKeyStoreProperties.getJksLocation(), jwtKeyStoreProperties.getPassword().toCharArray());
+		return keyStoreKeyFactore.getKeyPair(jwtKeyStoreProperties.getKeypairAlias());
 	}
 
 	private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {

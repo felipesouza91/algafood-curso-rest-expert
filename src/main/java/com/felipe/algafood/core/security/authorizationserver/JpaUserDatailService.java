@@ -27,16 +27,14 @@ public class JpaUserDatailService implements UserDetailsService {
 		Usuario usuario = usuarioRepository.findByEmail(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado com o email informado"));
 		System.out.println(usuario.getNome());
-		//TODO: Remover apos criptografar as senhas 
-		//usuario.setSenha(encode.encode(usuario.getSenha()));
 		return new AuthUser(usuario, getAuthoriteies(usuario));
 	}
 
 	private Collection<GrantedAuthority> getAuthoriteies(Usuario usuario) {
 		return usuario.getGrupos().stream()
 						.flatMap(grupo -> grupo.getPermissoes().stream())
-							.map(permissao -> new SimpleGrantedAuthority(permissao.getNome())).collect(Collectors.toSet());
-		
+							.map(permissao -> new SimpleGrantedAuthority(permissao.getNome().toUpperCase()))
+								.collect(Collectors.toSet());
 	}
 
 }
