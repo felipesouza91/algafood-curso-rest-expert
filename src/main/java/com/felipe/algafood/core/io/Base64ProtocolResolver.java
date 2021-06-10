@@ -3,7 +3,6 @@ package com.felipe.algafood.core.io;
 import java.util.Base64;
 
 import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ProtocolResolver;
