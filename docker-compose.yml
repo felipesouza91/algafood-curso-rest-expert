@@ -16,7 +16,6 @@ services:
       - algafood-network
   app:
     image: algafood-api
-    container_name: app_container
     command:
       [
         './wait-for-it.sh',
@@ -32,9 +31,9 @@ services:
       DB_HOST: algafood-mysql
       spring.datasource.username: 'root'
       spring.datasource.password: ''
-    ports:
-      - 8080:8080
     networks:
       - algafood-network
     depends_on:
       - algafood-mysql
+    deploy:
+      replicas: 2
