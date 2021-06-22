@@ -1,16 +1,12 @@
 package com.felipe.algafood.infrastructure.service.email;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
 import com.felipe.algafood.core.email.EmailProperties;
 import com.felipe.algafood.domain.exception.EmailException;
 import com.felipe.algafood.domain.service.EnvioEmailService;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 public class SmtpEnvioEmailService implements EnvioEmailService {
 
@@ -21,12 +17,12 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 	protected EmailProperties emailProperties;
 	
 	@Autowired
-	protected Configuration freemarkConfig;
+	protected EmailTemplateProcessor emailTemplateProcessor;
 	
 	@Override
 	public void enviar(Mensagem mensagem) {
 		try {
-			String corpo = this.processarTemplate(mensagem);
+			String corpo = emailTemplateProcessor.processarTemplate(mensagem);
 			var mimeMessage = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
 			helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));
@@ -39,13 +35,4 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 		}
 	}
 
-	protected String processarTemplate(Mensagem mensagem) {
-		try {
-			Template template = freemarkConfig.getTemplate(mensagem.getCorpo());
-			 
-			return FreeMarkerTemplateUtils.processTemplateIntoString(template, mensagem.getVariaveis());
-		} catch (Exception e) {
-			throw new  EmailException("Não foi possivel montar o template do e-mail", e);
-		} 
-	}
 }

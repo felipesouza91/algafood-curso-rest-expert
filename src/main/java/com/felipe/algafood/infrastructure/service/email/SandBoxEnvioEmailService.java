@@ -10,7 +10,7 @@ public class SandBoxEnvioEmailService extends SmtpEnvioEmailService {
 	@Override
 	public void enviar(Mensagem mensagem) {
 		try {
-			String corpo = super.processarTemplate(mensagem);
+			String corpo = super.emailTemplateProcessor.processarTemplate(mensagem);
 			var mimeMessage = super.mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
 			helper.setTo(emailProperties.getSandBox().getDestinatario());

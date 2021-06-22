@@ -28,17 +28,17 @@ services:
         'api.jar',
       ]
     environment:
+      SPRING_PROFILES_ACTIVE: development
       DB_HOST: algafood-mysql
       spring.datasource.username: 'root'
       spring.datasource.password: ''
       spring.session.store-type: redis
       spring.redis.host: redis-server
+
     networks:
       - algafood-network
     depends_on:
       - algafood-mysql
-    deploy:
-      replicas: 2
 
   redis-server:
     image: redis:6.2.1-alpine
